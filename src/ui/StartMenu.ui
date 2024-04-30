@@ -32,10 +32,10 @@
       <property name="currentIndex">
        <number>0</number>
       </property>
-      <widget class="QWidget" name="MainPage">
+      <widget class="QWidget" name="mainPage">
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <widget class="QLabel" name="Title">
+         <widget class="QLabel" name="title">
           <property name="font">
            <font>
             <pointsize>37</pointsize>
@@ -69,7 +69,7 @@
          </spacer>
         </item>
         <item alignment="Qt::AlignHCenter">
-         <widget class="QPushButton" name="StartButton">
+         <widget class="QPushButton" name="startButton">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -100,7 +100,7 @@
          </widget>
         </item>
         <item alignment="Qt::AlignHCenter">
-         <widget class="QPushButton" name="QuitButton">
+         <widget class="QPushButton" name="quitButton">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -158,7 +158,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>QuitButton</sender>
+   <sender>quitButton</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
    <slot>close()</slot>
