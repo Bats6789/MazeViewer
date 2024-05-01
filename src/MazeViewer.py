@@ -8,16 +8,18 @@ class MazeViewer(QGraphicsView):
         super().__init__(*args, **kwargs)
 
         self.scene = QGraphicsScene()
-        self.rect = QGraphicsRectItem(0, 0, 100, 100)
-        self.rect.setPos(0, 0)
-        self.rect.setBrush(QColor(127, 127, 127, 255))
-        self.scene.addItem(self.rect)
+        self.rects = []
+        for y in range(10):
+            for x in range(10):
+                rect = QGraphicsRectItem(0, 0, 10, 10)
+                rect.setPos(x * 10, y * 10)
+                rect.setBrush(QColor(127, 127, 127, 255))
+                self.scene.addItem(rect)
+                self.rects.append(rect)
+
         self.setScene(self.scene)
+        self.setSceneRect(0, 0, 100, 100)
 
     def resizeEvent(self, e):
         super().resizeEvent(e)
-        sz = e.size()
-        minSz = min(sz.width(), sz.height())
-        # self.setFixedSize(minSz, minSz)
-        self.setSceneRect(0, 0, minSz, minSz)
-        self.fitInView(0, 0, minSz, minSz, Qt.AspectRatioMode.KeepAspectRatioByExpanding)
+        self.fitInView(self.sceneRect(), Qt.AspectRatioMode.KeepAspectRatioByExpanding)

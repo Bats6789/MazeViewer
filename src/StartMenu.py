@@ -41,8 +41,32 @@ class MainWindow(QMainWindow):
     def resizeEvent(self, e):
         super().resizeEvent(e)
 
+        # For whatever reason, the QGraphicsView won't
+        # center the box when center layout is selected.
+        # Instead, it centers the left edge. Therefore,
+        # we must manually handle the view's geometry.
+
+        # Gather properties
         width = e.size().width()
         height = e.size().height()
-        minSz = min(width, height)
+        rect = self.second.graphicsView.geometry()
+        y = rect.y()
+        margins = self.second.verticalLayout.getContentsMargins()
+        sepSpacing = self.second.verticalLayout.spacing()
 
-        self.second.graphicsView.resize(minSz, minSz)
+        # Determine the length of the sides
+        horSpacing = margins[0] + margins[2]  # left and right margin
+        verSpacing = margins[1] + margins[3]  # top and bottom margin
+        heightBuf = y + 2 * sepSpacing + verSpacing  # total space consumed from height
+        minSz = int(min(width - horSpacing, height - heightBuf))
+
+        # determine X location
+        if width > minSz:
+            x = int(width - minSz) // 2
+        else:
+            x = 0
+
+        rect.setX(x)
+        rect.setWidth(minSz)
+        rect.setHeight(minSz)
+        self.second.graphicsView.setGeometry(rect)
