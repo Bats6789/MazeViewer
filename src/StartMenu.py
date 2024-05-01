@@ -6,6 +6,7 @@ from PyQt6 import uic
 from PyQt6.QtWidgets import QMainWindow
 from PyQt6.QtCore import QCoreApplication
 from PyQt6.QtGui import QResizeEvent
+import subprocess
 
 
 class MainWindow(QMainWindow):
@@ -20,18 +21,21 @@ class MainWindow(QMainWindow):
         uic.loadUi('ui/StartMenu.ui', self)
 
         # Connect page swapping buttons
-        self.startButton.clicked.connect(self.goToSecond)
-        self.second = uic.loadUi('ui/MazeViewing.ui')
-        self.second.backButton.clicked.connect(self.goToFirst)
-        self.stackedWidget.addWidget(self.second)
+        self.startButton.clicked.connect(self.goToMazeView)
+        self.mazeView = uic.loadUi('ui/MazeViewing.ui')
+        self.mazeView.backButton.clicked.connect(self.goToMainMenu)
+        self.stackedWidget.addWidget(self.mazeView)
+
+        # Connect control buttons for mazeView page
+        self.mazeView.generateButton.clicked.connect(self.generate)
         pass
 
-    def goToFirst(self):
+    def goToMainMenu(self):
         """Go to the first page."""
         self.stackedWidget.setCurrentIndex(0)
         pass
 
-    def goToSecond(self):
+    def goToMazeView(self):
         """Go to the second page."""
         self.stackedWidget.setCurrentIndex(1)
         e = QResizeEvent(self.geometry().size(), self.geometry().size())
@@ -49,10 +53,10 @@ class MainWindow(QMainWindow):
         # Gather properties
         width = e.size().width()
         height = e.size().height()
-        rect = self.second.graphicsView.geometry()
+        rect = self.mazeView.mazeViewer.geometry()
         y = rect.y()
-        margins = self.second.verticalLayout.getContentsMargins()
-        sepSpacing = self.second.verticalLayout.spacing()
+        margins = self.mazeView.verticalLayout.getContentsMargins()
+        sepSpacing = self.mazeView.verticalLayout.spacing()
 
         # Determine the length of the sides
         horSpacing = margins[0] + margins[2]  # left and right margin
@@ -66,7 +70,18 @@ class MainWindow(QMainWindow):
         else:
             x = 0
 
+        # Set properties of the rectangle
         rect.setX(x)
         rect.setWidth(minSz)
         rect.setHeight(minSz)
-        self.second.graphicsView.setGeometry(rect)
+
+        # Scale the GraphicsView's view
+        self.mazeView.mazeViewer.setGeometry(rect)
+
+    def generate(self):
+        cmd = ['\\Users\\bwingard\\C_Projects\\MazeCreator\\bin\\MazeCreator.exe', '-q']
+        process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+        process.wait()
+        maze = '\n'.join([line.decode('ASCII').strip('\r\n') for line in process.stdout])
+        self.mazeView.mazeViewer.drawMaze(maze)
+        self.mazeView.mazeViewer.viewport().update()
