@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>491</width>
-    <height>503</height>
+    <width>425</width>
+    <height>250</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -46,6 +46,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="clearButton">
+       <property name="text">
+        <string>Clear Maze</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -63,15 +70,21 @@
      </item>
      <item>
       <widget class="QPushButton" name="stepBackButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
-        <string>◀</string>
+        <string>&lt;</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="StepForwardButton">
+      <widget class="QPushButton" name="stepForwardButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
-        <string>▶</string>
+        <string>&gt;</string>
        </property>
       </widget>
      </item>
