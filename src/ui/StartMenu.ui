@@ -154,15 +154,16 @@
    </property>
    <widget class="QMenu" name="menuSettings">
     <property name="title">
-     <string>Settings</string>
+     <string>&amp;Settings</string>
     </property>
     <widget class="QMenu" name="menuColor">
      <property name="title">
-      <string>Color</string>
+      <string>&amp;Color</string>
      </property>
      <addaction name="actionActiveCellColor"/>
      <addaction name="actionInactiveCellColor"/>
     </widget>
+    <addaction name="actionSize"/>
     <addaction name="actionRunSpeed"/>
     <addaction name="menuColor"/>
    </widget>
@@ -171,17 +172,22 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionActiveCellColor">
    <property name="text">
-    <string>Active Cell Color</string>
+    <string>&amp;Active Cell Color</string>
    </property>
   </action>
   <action name="actionInactiveCellColor">
    <property name="text">
-    <string>Inactive Cell Color</string>
+    <string>&amp;Inactive Cell Color</string>
    </property>
   </action>
   <action name="actionRunSpeed">
    <property name="text">
-    <string>Run Speed</string>
+    <string>&amp;Run Speed</string>
+   </property>
+  </action>
+  <action name="actionSize">
+   <property name="text">
+    <string>Si&amp;ze</string>
    </property>
   </action>
  </widget>

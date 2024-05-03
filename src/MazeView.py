@@ -11,6 +11,7 @@ class MazeView(QWidget):
         uic.loadUi('ui/MazeViewing.ui', self)
 
         self.step = -1
+        self.speed = 1
         self.steps = []
         self.stepsFile = 'maze.steps'
 
@@ -24,6 +25,19 @@ class MazeView(QWidget):
         self.stepBackButton.setVisible(False)
         self.stepForwardButton.setVisible(False)
         self.clearButton.setVisible(False)
+
+    @property
+    def speed(self):
+        return self._speed
+
+    @speed.setter
+    def speed(self, speed: int):
+        if speed > 100:
+            self._speed = 100
+        elif speed < 1:
+            self._speed = 1
+        else:
+            self._speed = speed
 
     def resizeEvent(self, e):
         super().resizeEvent(e)
@@ -40,6 +54,7 @@ class MazeView(QWidget):
         y = rect.y()
         margins = self.verticalLayout.getContentsMargins()
         sepSpacing = self.verticalLayout.spacing()
+        sceneRect = self.mazeViewer.sceneRect()
 
         # Determine the length of the sides
         horSpacing = margins[0] + margins[2]  # left and right margin
@@ -53,10 +68,18 @@ class MazeView(QWidget):
         else:
             x = 0
 
+        # Determine ratio
+        if sceneRect.width() > sceneRect.height():
+            widthScale = 1
+            heightScale = sceneRect.height() / sceneRect.width()
+        else:
+            widthScale = sceneRect.width() / sceneRect.height()
+            heightScale = 1
+
         # Set properties of the rectangle
         rect.setX(x)
-        rect.setWidth(minSz)
-        rect.setHeight(minSz)
+        rect.setWidth(int(minSz * widthScale))
+        rect.setHeight(int(minSz * heightScale))
 
         # Scale the GraphicsView's view
         self.mazeViewer.setGeometry(rect)
@@ -64,7 +87,8 @@ class MazeView(QWidget):
     def generate(self):
         cmd = ['\\Users\\bwingard\\C_Projects\\MazeCreator\\bin\\MazeCreator.exe',
                '-q',
-               '-v', self.stepsFile]
+               '-v', self.stepsFile,
+               str(self.mazeViewer.width), str(self.mazeViewer.height)]
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
         process.wait()
         self.maze = '\n'.join([line.decode('ASCII').strip('\r\n') for line in process.stdout])
@@ -82,11 +106,8 @@ class MazeView(QWidget):
         self.step = 0
         self.steps = self.importSteps(self.stepsFile)
 
-        # Resize has to be called everytime the maze will be redrawn
-        e = QResizeEvent(self.geometry().size(), self.geometry().size())
-        QCoreApplication.postEvent(self, e)
         self.mazeViewer.drawMaze(self.maze)
-        self.mazeViewer.refresh()
+        self.refreshMazeView()
 
     def importSteps(self, fileName):
         file = open(fileName, 'r')
@@ -100,11 +121,8 @@ class MazeView(QWidget):
 
         self.step -= 1
 
-        # Resize has to be called everytime the maze will be redrawn
-        e = QResizeEvent(self.geometry().size(), self.geometry().size())
-        QCoreApplication.postEvent(self, e)
         self.mazeViewer.drawMaze(self.steps[self.step])
-        self.mazeViewer.refresh()
+        self.refreshMazeView()
 
         if self.step == 0:
             self.stepBackButton.setEnabled(False)
@@ -121,14 +139,20 @@ class MazeView(QWidget):
             self.stepForwardButton.setEnabled(False)
 
     def clear(self):
-        # Resize has to be called everytime the maze will be redrawn
-        e = QResizeEvent(self.geometry().size(), self.geometry().size())
-        QCoreApplication.postEvent(self, e)
-
         # clear the maze
         self.mazeViewer.clearMaze()
+        self.generateButton.setText('Generate')
 
         # Hide buttons
         self.stepBackButton.setVisible(False)
         self.stepForwardButton.setVisible(False)
         self.clearButton.setVisible(False)
+
+        self.refreshMazeView()
+
+    def refreshMazeView(self):
+        # Resize has to be called everytime the maze will be redrawn
+        sz = self.geometry().size()
+        e = QResizeEvent(sz, sz)
+        QCoreApplication.postEvent(self, e)
+        self.mazeViewer.refresh()

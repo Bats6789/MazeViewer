@@ -18,17 +18,63 @@ class MazeViewer(QGraphicsView):
         self.sceneWidth = 1000
         self.sceneHeight = 1000
 
-        cellRect = QRectF(0, 0, self.sceneWidth / self.width, self.sceneHeight / self.height)
+        self.generateMaze()
+
+        self.setScene(self.scene)
+
+    def generateMaze(self):
+        if self.rects != []:
+            for rect in self.rects:
+                self.scene.removeItem(rect)
+
+        self.rects = []
+
+        if self.width > self.height:
+            self.sceneWidth = 1000
+            self.sceneHeight = 1000 * self.height / self.width
+        else:
+            self.sceneWidth = 1000 * self.width / self.height
+            self.sceneHeight = 1000
+
+        cellWidth = self.sceneWidth / self.width
+        cellHeight = self.sceneHeight / self.height
+        cellRect = QRectF(0, 0, cellWidth, cellHeight)
+
         for y in range(self.height):
             for x in range(self.width):
                 rect = Cell(cellRect)
-                rect.setPos(x * cellRect.width(), y * cellRect.height())
+                rect.setPos(x * cellWidth, y * cellHeight)
                 rect.setBrush(self.inactiveColor)
                 self.scene.addItem(rect)
                 self.rects.append(rect)
 
-        self.setScene(self.scene)
         self.setSceneRect(0, 0, self.sceneWidth, self.sceneHeight)
+
+    @property
+    def width(self):
+        return self._width
+
+    @width.setter
+    def width(self, width: int):
+        if width > 20:
+            self._width = 20
+        elif width < 2:
+            self._width = 2
+        else:
+            self._width = width
+
+    @property
+    def height(self):
+        return self._height
+
+    @height.setter
+    def height(self, height: int):
+        if height > 20:
+            self._height = 20
+        elif height < 2:
+            self._height = 2
+        else:
+            self._height = height
 
     @property
     def inactiveColor(self):
@@ -108,3 +154,7 @@ class MazeViewer(QGraphicsView):
         # self.fitInView(self.sceneRect(), Qt.AspectRatioMode.KeepAspectRatioByExpanding)
         self.fitInView(self.sceneRect())
         self.viewport().update()
+
+    def reset(self):
+        self.generateMaze()
+        self.clearMaze()

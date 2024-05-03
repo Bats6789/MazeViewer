@@ -7,6 +7,8 @@ from PyQt6.QtWidgets import QMainWindow, QColorDialog
 # from PyQt6.QtCore import QCoreApplication
 # from PyQt6.QtGui import QResizeEvent
 from MazeView import MazeView
+from SizeDialog import SizeDialog
+from SpeedDialog import SpeedDialog
 
 
 class MainWindow(QMainWindow):
@@ -29,6 +31,8 @@ class MainWindow(QMainWindow):
         # Settings menu options
         self.actionActiveCellColor.triggered.connect(self.activeColorAction)
         self.actionInactiveCellColor.triggered.connect(self.inactiveColorAction)
+        self.actionSize.triggered.connect(self.adjustSize)
+        self.actionRunSpeed.triggered.connect(self.adjustSpeed)
 
     def goToMainMenu(self):
         """Go to the first page."""
@@ -53,6 +57,22 @@ class MainWindow(QMainWindow):
             self.mazeView.mazeViewer.inactiveColor = dialog.selectedColor()
             self.mazeView.mazeViewer.redrawMaze()
             self.mazeView.mazeViewer.refresh()
+
+    def adjustSize(self):
+        mazeViewer = self.mazeView.mazeViewer
+        dialog = SizeDialog(mazeViewer.width, mazeViewer.height)
+        if dialog.exec():
+            self.mazeView.mazeViewer.width = dialog.width
+            self.mazeView.mazeViewer.height = dialog.height
+            self.mazeView.mazeViewer.reset()
+            self.mazeView.generateButton.setText('Generate')
+            self.mazeView.refreshMazeView()
+
+    def adjustSpeed(self):
+        dialog = SpeedDialog(self.mazeView.speed)
+        if dialog.exec():
+            self.mazeView.speed = dialog.speed
+            print('I am speed')
 
     def resizeEvent(self, e):
         super().resizeEvent(e)
