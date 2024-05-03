@@ -15,8 +15,10 @@ class MazeViewer(QGraphicsView):
         self.activeColor = QColor(255, 255, 255, 255)
         self.width = width
         self.height = height
+        self.sceneWidth = 1000
+        self.sceneHeight = 1000
 
-        cellRect = QRectF(0, 0, 1000 / self.width, 1000 / self.height)
+        cellRect = QRectF(0, 0, self.sceneWidth / self.width, self.sceneHeight / self.height)
         for y in range(self.height):
             for x in range(self.width):
                 rect = Cell(cellRect)
@@ -26,7 +28,7 @@ class MazeViewer(QGraphicsView):
                 self.rects.append(rect)
 
         self.setScene(self.scene)
-        self.setSceneRect(0, 0, 1000, 1000)
+        self.setSceneRect(0, 0, self.sceneWidth, self.sceneHeight)
 
     @property
     def inactiveColor(self):
@@ -101,3 +103,8 @@ class MazeViewer(QGraphicsView):
                 self.rects[i].char = ' '
 
                 self.rects[i].setBrush(self.inactiveColor)
+
+    def refresh(self):
+        # self.fitInView(self.sceneRect(), Qt.AspectRatioMode.KeepAspectRatioByExpanding)
+        self.fitInView(self.sceneRect())
+        self.viewport().update()

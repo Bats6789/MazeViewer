@@ -1,5 +1,7 @@
 from PyQt6.QtWidgets import QWidget
 from PyQt6 import uic
+from PyQt6.QtCore import QCoreApplication
+from PyQt6.QtGui import QResizeEvent
 import subprocess
 
 
@@ -79,8 +81,12 @@ class MazeView(QWidget):
         # Prep steps and maze
         self.step = 0
         self.steps = self.importSteps(self.stepsFile)
+
+        # Resize has to be called everytime the maze will be redrawn
+        e = QResizeEvent(self.geometry().size(), self.geometry().size())
+        QCoreApplication.postEvent(self, e)
         self.mazeViewer.drawMaze(self.maze)
-        self.mazeViewer.viewport().update()
+        self.mazeViewer.refresh()
 
     def importSteps(self, fileName):
         file = open(fileName, 'r')
@@ -93,8 +99,12 @@ class MazeView(QWidget):
             self.stepForwardButton.setEnabled(True)
 
         self.step -= 1
+
+        # Resize has to be called everytime the maze will be redrawn
+        e = QResizeEvent(self.geometry().size(), self.geometry().size())
+        QCoreApplication.postEvent(self, e)
         self.mazeViewer.drawMaze(self.steps[self.step])
-        self.mazeViewer.viewport().update()
+        self.mazeViewer.refresh()
 
         if self.step == 0:
             self.stepBackButton.setEnabled(False)
@@ -105,12 +115,16 @@ class MazeView(QWidget):
 
         self.step += 1
         self.mazeViewer.drawMaze(self.steps[self.step])
-        self.mazeViewer.viewport().update()
+        self.mazeViewer.refresh()
 
         if self.step == len(self.steps) - 1:
             self.stepForwardButton.setEnabled(False)
 
     def clear(self):
+        # Resize has to be called everytime the maze will be redrawn
+        e = QResizeEvent(self.geometry().size(), self.geometry().size())
+        QCoreApplication.postEvent(self, e)
+
         # clear the maze
         self.mazeViewer.clearMaze()
 

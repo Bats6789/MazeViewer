@@ -45,16 +45,16 @@ class MainWindow(QMainWindow):
         if dialog.exec():
             self.mazeView.mazeViewer.activeColor = dialog.selectedColor()
             self.mazeView.mazeViewer.redrawMaze()
-            self.mazeView.mazeViewer.viewport().update()
+            self.mazeView.mazeViewer.refresh()
 
     def inactiveColorAction(self):
         dialog = QColorDialog(self.mazeView.mazeViewer.inactiveColor)
         if dialog.exec():
             self.mazeView.mazeViewer.inactiveColor = dialog.selectedColor()
             self.mazeView.mazeViewer.redrawMaze()
-            self.mazeView.mazeViewer.viewport().update()
+            self.mazeView.mazeViewer.refresh()
 
     def resizeEvent(self, e):
         super().resizeEvent(e)
 
-        self.mazeView.mazeViewer.viewport().update()
+        self.mazeView.mazeViewer.refresh()

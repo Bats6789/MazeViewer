@@ -81,7 +81,6 @@ class Cell(QGraphicsRectItem):
         fontMetrics = QFontMetrics(font)
         boundingRect = fontMetrics.tightBoundingRect(text)
         step = -1 if boundingRect.height() > rect.height() else 1
-        # print(step)
 
         while True:
             font.setPointSize(sz + step)
