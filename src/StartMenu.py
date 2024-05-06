@@ -65,14 +65,13 @@ class MainWindow(QMainWindow):
             self.mazeView.mazeViewer.width = dialog.width
             self.mazeView.mazeViewer.height = dialog.height
             self.mazeView.mazeViewer.reset()
-            self.mazeView.generateButton.setText('Generate')
+            self.mazeView.generateButton.setText('&Generate')
             self.mazeView.refreshMazeView()
 
     def adjustSpeed(self):
         dialog = SpeedDialog(self.mazeView.speed)
         if dialog.exec():
             self.mazeView.speed = dialog.speed
-            print('I am speed')
 
     def resizeEvent(self, e):
         super().resizeEvent(e)

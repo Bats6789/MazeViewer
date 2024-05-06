@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QWidget
 from PyQt6 import uic
-from PyQt6.QtCore import QCoreApplication
+from PyQt6.QtCore import QCoreApplication, QTimerEvent
 from PyQt6.QtGui import QResizeEvent
 import subprocess
 
@@ -11,7 +11,7 @@ class MazeView(QWidget):
         uic.loadUi('ui/MazeViewing.ui', self)
 
         self.step = -1
-        self.speed = 1
+        self.speed = 50
         self.steps = []
         self.stepsFile = 'maze.steps'
 
@@ -20,11 +20,13 @@ class MazeView(QWidget):
         self.stepBackButton.clicked.connect(self.stepBack)
         self.stepForwardButton.clicked.connect(self.stepForward)
         self.clearButton.clicked.connect(self.clear)
+        self.runButton.clicked.connect(self.run)
 
         # Set visibility for buttons
         self.stepBackButton.setVisible(False)
         self.stepForwardButton.setVisible(False)
         self.clearButton.setVisible(False)
+        self.runButton.setVisible(False)
 
     @property
     def speed(self):
@@ -94,11 +96,12 @@ class MazeView(QWidget):
         self.maze = '\n'.join([line.decode('ASCII').strip('\r\n') for line in process.stdout])
 
         # Change button text
-        self.generateButton.setText('Regenerate')
+        self.generateButton.setText('Re&generate')
 
         # Enable back and forward buttons
         self.stepBackButton.setVisible(True)
         self.stepForwardButton.setVisible(True)
+        self.runButton.setVisible(True)
         self.clearButton.setVisible(True)
         self.stepForwardButton.setEnabled(True)
 
@@ -141,12 +144,13 @@ class MazeView(QWidget):
     def clear(self):
         # clear the maze
         self.mazeViewer.clearMaze()
-        self.generateButton.setText('Generate')
+        self.generateButton.setText('&Generate')
 
         # Hide buttons
         self.stepBackButton.setVisible(False)
         self.stepForwardButton.setVisible(False)
         self.clearButton.setVisible(False)
+        self.runButon.setVisible(False)
 
         self.refreshMazeView()
 
@@ -156,3 +160,41 @@ class MazeView(QWidget):
         e = QResizeEvent(sz, sz)
         QCoreApplication.postEvent(self, e)
         self.mazeViewer.refresh()
+
+    def run(self):
+
+        self.step = 0
+
+        # The waiting time is based on milliseconds.
+        # The setting is steps/s, so 1/speed = s/steps
+        # 1000 ms / s => 1000 * 1/speed
+        waitTime = int(1000 * 1 / self.speed)
+
+        # Disable all controls until the run finishes
+        self.backButton.setEnabled(False)
+        self.generateButton.setEnabled(False)
+        self.clearButton.setEnabled(False)
+        self.stepBackButton.setEnabled(False)
+        self.stepForwardButton.setEnabled(False)
+        self.runButton.setEnabled(False)
+
+        # Start the timer
+        self.startTimer(waitTime)
+
+    def timerEvent(self, e: QTimerEvent):
+        super().timerEvent(e)
+
+        self.mazeViewer.drawMaze(self.steps[self.step])
+        self.mazeViewer.refresh()
+        self.step += 1
+
+        if self.step == len(self.steps):
+            self.killTimer(e.timerId())
+
+            # Enable all controls until the run finishes
+            self.backButton.setEnabled(True)
+            self.generateButton.setEnabled(True)
+            self.clearButton.setEnabled(True)
+            self.stepBackButton.setEnabled(True)
+            self.stepForwardButton.setEnabled(True)
+            self.runButton.setEnabled(True)

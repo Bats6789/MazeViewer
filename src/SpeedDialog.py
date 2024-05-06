@@ -10,7 +10,9 @@ class SpeedDialog(QDialog):
         uic.loadUi('ui/SpeedDialog.ui', self)
 
         self.speed = speed
+        self.firstKey = True
 
+        self.speedSlider.setSliderPosition(self.speed)
         self.updateDisplay()
 
         self.speedSlider.valueChanged.connect(self.setSpeedFromSlider)
@@ -43,7 +45,10 @@ class SpeedDialog(QDialog):
             case num if kCode.Key_0 <= num <= kCode.Key_9:
                 num -= kCode.Key_0
 
-                if self.speed < 10:
+                if self.firstKey:
+                    self.firstKey = False
+                    self.speed = num
+                elif self.speed < 10:
                     self.speed *= 10
                     self.speed += num
                 elif self.speed == 10 and num == 0:
@@ -51,11 +56,13 @@ class SpeedDialog(QDialog):
                 else:
                     self.speed = num
 
-                self.speedSlider.setSliderPosition(self.speed)
-                self.updateDisplay()
-
             case kCode.Key_Backspace:
-                self.speed //= 10
+                if self.speed >= 10:
+                    self.speed //= 10
 
-                self.speedSlider.setSliderPosition(self.speed)
-                self.updateDisplay()
+            case kCode.Key_Delete:
+                if self.speed >= 10:
+                    self.speed %= 10
+
+        self.speedSlider.setSliderPosition(self.speed)
+        self.updateDisplay()
