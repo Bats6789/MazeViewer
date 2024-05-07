@@ -12,11 +12,7 @@ from SpeedDialog import SpeedDialog
 
 
 class MainWindow(QMainWindow):
-    """The main window class for the start menu
-
-    The start menu contains a quit button that terminates the window,
-    and a start button to start the project.
-    """
+    """The main window class for the start menu."""
 
     def __init__(self):
         super().__init__()
@@ -34,6 +30,15 @@ class MainWindow(QMainWindow):
         self.actionSize.triggered.connect(self.adjustSize)
         self.actionRunSpeed.triggered.connect(self.adjustSpeed)
 
+    def resizeEvent(self, e):
+        """Override of the resizeEvent method.
+
+        Passes any resize event to the mazeViewer.
+        """
+        super().resizeEvent(e)
+
+        self.mazeView.mazeViewer.refresh()
+
     def goToMainMenu(self):
         """Go to the first page."""
         self.stackedWidget.setCurrentIndex(0)
@@ -45,6 +50,7 @@ class MainWindow(QMainWindow):
         # QCoreApplication.postEvent(self, e)
 
     def activeColorAction(self):
+        """Starts dialog for assigning the active cell color."""
         dialog = QColorDialog(self.mazeView.mazeViewer.activeColor)
         if dialog.exec():
             self.mazeView.mazeViewer.activeColor = dialog.selectedColor()
@@ -52,6 +58,7 @@ class MainWindow(QMainWindow):
             self.mazeView.mazeViewer.refresh()
 
     def inactiveColorAction(self):
+        """Starts dialog for assigning the inactive cell color."""
         dialog = QColorDialog(self.mazeView.mazeViewer.inactiveColor)
         if dialog.exec():
             self.mazeView.mazeViewer.inactiveColor = dialog.selectedColor()
@@ -59,6 +66,7 @@ class MainWindow(QMainWindow):
             self.mazeView.mazeViewer.refresh()
 
     def adjustSize(self):
+        """Starts dialog for adjusting the size of the maze."""
         mazeViewer = self.mazeView.mazeViewer
         dialog = SizeDialog(mazeViewer.width, mazeViewer.height)
         if dialog.exec():
@@ -69,11 +77,7 @@ class MainWindow(QMainWindow):
             self.mazeView.refreshMazeView()
 
     def adjustSpeed(self):
+        """Starts dialog for adjusting the speed of the run operation."""
         dialog = SpeedDialog(self.mazeView.speed)
         if dialog.exec():
             self.mazeView.speed = dialog.speed
-
-    def resizeEvent(self, e):
-        super().resizeEvent(e)
-
-        self.mazeView.mazeViewer.refresh()

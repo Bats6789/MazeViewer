@@ -1,3 +1,8 @@
+"""The View for the maze scene
+
+This file utilizes the layout of a ui file, and adds the control
+logic to it.
+"""
 from PyQt6.QtWidgets import QWidget
 from PyQt6 import uic
 from PyQt6.QtCore import QCoreApplication, QTimerEvent
@@ -7,6 +12,20 @@ import os
 
 
 class MazeView(QWidget):
+    """The view for the maze scene.
+
+    Args:
+        *args (list): List of arguments to pass to QWidget.
+        **kwargs (dict): Dictionary of key-word arguments to pass to QWidget.
+
+    Attributes:
+        step (int): The current step for the maze view.
+        speed (int): The speed to run through the steps in steps/s.
+        steps (list[str]): The list of steps to generate/solve a maze.
+        stepsFile (str): The filename for generating steps.
+        genBin (str): The binary for generating mazes.
+    """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         uic.loadUi('ui/MazeViewing.ui', self)
@@ -32,6 +51,7 @@ class MazeView(QWidget):
 
     @property
     def speed(self):
+        """int: The speed of the run operation in steps/s"""
         return self._speed
 
     @speed.setter
@@ -43,7 +63,15 @@ class MazeView(QWidget):
         else:
             self._speed = speed
 
-    def resizeEvent(self, e):
+    def resizeEvent(self, e: QResizeEvent):
+        """Override of the resizeEvent method
+
+        Note:
+            The override is due to QGraphicsView improper resizing.
+
+        Args:
+            e (QResizeEvent): The resize event.
+        """
         super().resizeEvent(e)
 
         # For whatever reason, the QGraphicsView won't
@@ -88,7 +116,37 @@ class MazeView(QWidget):
         # Scale the GraphicsView's view
         self.mazeViewer.setGeometry(rect)
 
+    def timerEvent(self, e: QTimerEvent):
+        """Override of the timerEvent method
+
+        Note:
+            The override is mainly to handle the run operation.
+
+        Args:
+            e (QTimerEvent): The timer event.
+        """
+        super().timerEvent(e)
+
+        self.mazeViewer.drawMaze(self.steps[self.step])
+        self.mazeViewer.refresh()
+        self.step += 1
+
+        if self.step == len(self.steps):
+            self.killTimer(e.timerId())
+
+            # Enable all controls until the run finishes
+            self.backButton.setEnabled(True)
+            self.generateButton.setEnabled(True)
+            self.clearButton.setEnabled(True)
+            self.stepBackButton.setEnabled(True)
+            self.runButton.setEnabled(True)
+
     def generate(self):
+        """Generates the maze and steps for building the maze.
+
+        Note:
+            This function will generate a file names after stepsFile attribute.
+        """
         cmd = [self.genBin, '-q',
                '-v', self.stepsFile,
                str(self.mazeViewer.width), str(self.mazeViewer.height)]
@@ -113,13 +171,22 @@ class MazeView(QWidget):
         self.mazeViewer.drawMaze(self.maze)
         self.refreshMazeView()
 
-    def importSteps(self, fileName):
+    def importSteps(self, fileName: str) -> list[str]:
+        """Imports and parses the steps from fileName.
+
+        Args:
+            fileName (str): The file to import.
+
+        Returns:
+            list[str]: The list of steps, with each step being a string.
+        """
         file = open(fileName, 'r')
 
         steps = file.read().split('\n\n')
         return steps
 
     def stepBack(self):
+        """Reverts the maze state to its previous state."""
         if self.step == len(self.steps) - 1:
             self.stepForwardButton.setEnabled(True)
 
@@ -132,6 +199,7 @@ class MazeView(QWidget):
             self.stepBackButton.setEnabled(False)
 
     def stepForward(self):
+        """Progresses the maze state to its next state."""
         if self.step == 0:
             self.stepBackButton.setEnabled(True)
 
@@ -143,6 +211,7 @@ class MazeView(QWidget):
             self.stepForwardButton.setEnabled(False)
 
     def clear(self):
+        """Clear the maze and revert it to its original state."""
         # clear the maze
         self.mazeViewer.clearMaze()
         self.generateButton.setText('&Generate')
@@ -156,14 +225,18 @@ class MazeView(QWidget):
         self.refreshMazeView()
 
     def refreshMazeView(self):
-        # Resize has to be called everytime the maze will be redrawn
+        """Resizes and redraws the maze view."""
+        # Resize has to be called every time the maze will be redrawn
         sz = self.geometry().size()
         e = QResizeEvent(sz, sz)
         QCoreApplication.postEvent(self, e)
         self.mazeViewer.refresh()
 
     def run(self):
-
+        """Run through the steps from start to finish.
+        Note:
+            The buttons will be disabled during the course of the run.
+        """
         self.step = 0
 
         # The waiting time is based on milliseconds.
@@ -181,20 +254,3 @@ class MazeView(QWidget):
 
         # Start the timer
         self.startTimer(waitTime)
-
-    def timerEvent(self, e: QTimerEvent):
-        super().timerEvent(e)
-
-        self.mazeViewer.drawMaze(self.steps[self.step])
-        self.mazeViewer.refresh()
-        self.step += 1
-
-        if self.step == len(self.steps):
-            self.killTimer(e.timerId())
-
-            # Enable all controls until the run finishes
-            self.backButton.setEnabled(True)
-            self.generateButton.setEnabled(True)
-            self.clearButton.setEnabled(True)
-            self.stepBackButton.setEnabled(True)
-            self.runButton.setEnabled(True)

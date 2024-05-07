@@ -1,3 +1,9 @@
+"""The dialog for specifying the size of a maze.
+
+This file utilizes the layout of a ui file, and adds control
+logic to it.
+"""
+
 from PyQt6 import uic
 from PyQt6.QtWidgets import QDialog
 from PyQt6.QtGui import QKeyEvent
@@ -6,11 +12,30 @@ from enum import Enum
 
 
 class Dimension(Enum):
+    """Enumeration for the properties.
+
+    Attributes:
+        Width = 0
+        Height = 1
+    """
     WIDTH = 0
     HEIGHT = 1
 
 
 class SizeDialog(QDialog):
+    """The dialog for assigning the size properties.
+
+    Args:
+        width (int): The width of the maze.
+        height (int): The height of the maze.
+        *args (list): The list of arguments to pass to the parent class.
+        **kwargs (dict): Dictionary of key-word arguments to pass to QWidget.
+
+    Attributes:
+        width (int): The width of the maze.
+        height (int): The height of the maze.
+    """
+
     def __init__(self, width: int, height: int, *args, **kwargs):
         super().__init__(*args, **kwargs)
         uic.loadUi("ui/SizeDialog.ui", self)
@@ -20,8 +45,8 @@ class SizeDialog(QDialog):
         self.width = width
         self.height = height
 
-        self.widthFirstKey = True
-        self.heightFirstKey = True
+        self._widthFirstKey = True
+        self._heightFirstKey = True
 
         self.widthSlider.setSliderPosition(width)
         self.heightSlider.setSliderPosition(height)
@@ -34,42 +59,24 @@ class SizeDialog(QDialog):
 
         self.oKButton.clicked.connect(self.setProps)
 
-    @property
-    def width(self):
-        return self._width
-
-    @width.setter
-    def width(self, width: int):
-        self._width = width
-
-    @property
-    def height(self):
-        return self._height
-
-    @height.setter
-    def height(self, height: int):
-        self._height = height
-
-    def setWidthWithSlider(self):
-        self.width = self.widthSlider.sliderPosition()
-
-    def setHeightWithSlider(self):
-        self.height = self.heightSlider.sliderPosition()
-
-    def setProps(self):
-        self.setWidthWithSlider()
-        self.setHeightWithSlider()
-
     def keyPressEvent(self, e: QKeyEvent):
+        """Override for the keyPressEvent.
+
+        Note:
+            Mainly for handling shortcut keys.
+
+        Args:
+            e (QKeyEvent): The key event.
+        """
         handled = False
 
         match (self.dimension):
             case Dimension.WIDTH:
                 val = self.width
-                firstKey = self.widthFirstKey
+                firstKey = self._widthFirstKey
             case Dimension.HEIGHT:
                 val = self.height
-                firstKey = self.heightFirstKey
+                firstKey = self._heightFirstKey
 
         kCode = Qt.Key
         match (e.key()):
@@ -110,13 +117,52 @@ class SizeDialog(QDialog):
         match (self.dimension):
             case Dimension.WIDTH:
                 self.width = val
-                self.widthFirstKey = firstKey
+                self._widthFirstKey = firstKey
             case Dimension.HEIGHT:
                 self.height = val
-                self.heightFirstKey = firstKey
+                self._heightFirstKey = firstKey
 
         self.widthSlider.setSliderPosition(self.width)
         self.heightSlider.setSliderPosition(self.height)
 
         if not handled:
             super().keyPressEvent(e)
+
+    @property
+    def width(self):
+        """int: The width of the maze.
+
+        Current range is limited between 2 and 20, and will bound any input
+        to those values. e.g. width = 1 => width = 2.
+        """
+        return self._width
+
+    @width.setter
+    def width(self, width: int):
+        self._width = width
+
+    @property
+    def height(self):
+        """int: The height of the maze.
+
+        Current range is limited between 2 and 20, and will bound any input
+        to those values. e.g. height = 1 => height = 2.
+        """
+        return self._height
+
+    @height.setter
+    def height(self, height: int):
+        self._height = height
+
+    def setWidthWithSlider(self):
+        """Sets the width attribute from the slider position."""
+        self.width = self.widthSlider.sliderPosition()
+
+    def setHeightWithSlider(self):
+        """Sets the height attribute from the slider position."""
+        self.height = self.heightSlider.sliderPosition()
+
+    def setProps(self):
+        """Sets all properties."""
+        self.setWidthWithSlider()
+        self.setHeightWithSlider()
