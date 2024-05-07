@@ -3,6 +3,7 @@ from PyQt6 import uic
 from PyQt6.QtCore import QCoreApplication, QTimerEvent
 from PyQt6.QtGui import QResizeEvent
 import subprocess
+import os
 
 
 class MazeView(QWidget):
@@ -14,6 +15,7 @@ class MazeView(QWidget):
         self.speed = 50
         self.steps = []
         self.stepsFile = 'maze.steps'
+        self.genBin = os.environ['MAZE_GEN']
 
         # Connect control buttons for mazeView page
         self.generateButton.clicked.connect(self.generate)
@@ -87,8 +89,7 @@ class MazeView(QWidget):
         self.mazeViewer.setGeometry(rect)
 
     def generate(self):
-        cmd = ['\\Users\\bwingard\\C_Projects\\MazeCreator\\bin\\MazeCreator.exe',
-               '-q',
+        cmd = [self.genBin, '-q',
                '-v', self.stepsFile,
                str(self.mazeViewer.width), str(self.mazeViewer.height)]
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
@@ -150,7 +151,7 @@ class MazeView(QWidget):
         self.stepBackButton.setVisible(False)
         self.stepForwardButton.setVisible(False)
         self.clearButton.setVisible(False)
-        self.runButon.setVisible(False)
+        self.runButton.setVisible(False)
 
         self.refreshMazeView()
 
@@ -196,5 +197,4 @@ class MazeView(QWidget):
             self.generateButton.setEnabled(True)
             self.clearButton.setEnabled(True)
             self.stepBackButton.setEnabled(True)
-            self.stepForwardButton.setEnabled(True)
             self.runButton.setEnabled(True)
