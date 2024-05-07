@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>573</width>
-    <height>433</height>
+    <width>657</width>
+    <height>467</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -49,6 +49,13 @@
       <widget class="QPushButton" name="clearButton">
        <property name="text">
         <string>&amp;Clear Maze</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="solveButton">
+       <property name="text">
+        <string>&amp;Solve</string>
        </property>
       </widget>
      </item>

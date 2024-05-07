@@ -51,15 +51,15 @@ class MazeViewer(QGraphicsView):
     def width(self):
         """int: The width of the maze.
 
-        Current range is limited between 2 and 20, and will bound any input
+        Current range is limited between 2 and 30, and will bound any input
         to those values. e.g. width = 1 => width = 2.
         """
         return self._width
 
     @width.setter
     def width(self, width: int):
-        if width > 20:
-            self._width = 20
+        if width > 30:
+            self._width = 30
         elif width < 2:
             self._width = 2
         else:
@@ -69,15 +69,15 @@ class MazeViewer(QGraphicsView):
     def height(self):
         """int: The height of the maze.
 
-        Current range is limited between 2 and 20, and will bound any input
+        Current range is limited between 2 and 30, and will bound any input
         to those values. e.g. height = 1 => height = 2.
         """
         return self._height
 
     @height.setter
     def height(self, height: int):
-        if height > 20:
-            self._height = 20
+        if height > 30:
+            self._height = 30
         elif height < 2:
             self._height = 2
         else:
@@ -153,6 +153,17 @@ class MazeViewer(QGraphicsView):
 
                 self.rects[i].setBrush(color)
 
+    def isRoute(self, c: str) -> bool:
+        """Determines if a character is a route.
+
+        Args:
+            c (str): The character to detrmine if it's a route.
+
+        Returns:
+            True if it is a route (*, s, x)
+        """
+        return c == '*' or c == 's' or c == 'x'
+
     def drawMaze(self, maze: str):
         """Draws the maze.
 
@@ -164,29 +175,59 @@ class MazeViewer(QGraphicsView):
         """
         rows = maze.split("\n")
 
-        for y in range(self.height):
-            for x in range(self.width):
-                i = y * self.width + x
+        try:
+            for y in range(self.height):
+                for x in range(self.width):
+                    i = y * self.width + x
 
-                xStr = 2 * x + 1
-                yStr = 2 * y + 1
+                    xStr = 2 * x + 1
+                    yStr = 2 * y + 1
 
-                color = self.inactiveColor
+                    color = self.inactiveColor
 
-                rect = self.rects[i]
+                    rect = self.rects[i]
 
-                rect.left = rows[yStr][xStr - 1] == "#"
-                rect.right = rows[yStr][xStr + 1] == "#"
-                rect.top = rows[yStr - 1][xStr] == "#"
-                rect.bottom = rows[yStr + 1][xStr] == "#"
+                    # Walls
+                    rect.left = rows[yStr][xStr - 1] == "#"
+                    rect.right = rows[yStr][xStr + 1] == "#"
+                    rect.top = rows[yStr - 1][xStr] == "#"
+                    rect.bottom = rows[yStr + 1][xStr] == "#"
 
-                rect = self.rects[i]
-                if not (rect.left and rect.right and rect.top and rect.bottom):
-                    color = self.activeColor
+                    # Paths
+                    if rows[yStr][xStr] == "." or self.isRoute(rows[yStr][xStr]):
+                        rect.leftPath = rows[yStr][xStr - 1] == "."
+                        rect.rightPath = rows[yStr][xStr + 1] == "."
+                        rect.topPath = rows[yStr - 1][xStr] == "."
+                        rect.bottomPath = rows[yStr + 1][xStr] == "."
+                    else:
+                        rect.leftPath = False
+                        rect.rightPath = False
+                        rect.topPath = False
+                        rect.bottomPath = False
 
-                self.rects[i].char = rows[yStr][xStr]
+                    # Routes
+                    if self.isRoute(rows[yStr][xStr]):
+                        rect.leftRoute = rows[yStr][xStr - 1] == "*"
+                        rect.rightRoute = rows[yStr][xStr + 1] == "*"
+                        rect.topRoute = rows[yStr - 1][xStr] == "*"
+                        rect.bottomRoute = rows[yStr + 1][xStr] == "*"
+                    else:
+                        rect.leftRoute = False
+                        rect.rightRoute = False
+                        rect.topRoute = False
+                        rect.bottomRoute = False
 
-                self.rects[i].setBrush(color)
+                    rect = self.rects[i]
+                    if not (rect.left and rect.right and rect.top and rect.bottom):
+                        color = self.activeColor
+
+                    self.rects[i].char = rows[yStr][xStr]
+
+                    self.rects[i].setBrush(color)
+        except IndexError:
+            print((xStr, yStr))
+            print((len(rows[0]), len(rows)))
+            print(maze)
 
     def clearMaze(self):
         """Resets the maze to factory default.
@@ -203,6 +244,16 @@ class MazeViewer(QGraphicsView):
                 self.rects[i].right = True
                 self.rects[i].top = True
                 self.rects[i].bottom = True
+
+                self.rects[i].leftPath = False
+                self.rects[i].rightPath = False
+                self.rects[i].topPath = False
+                self.rects[i].bottomPath = False
+
+                self.rects[i].leftRoute = False
+                self.rects[i].rightRoute = False
+                self.rects[i].topRoute = False
+                self.rects[i].bottomRoute = False
 
                 self.rects[i].char = " "
 

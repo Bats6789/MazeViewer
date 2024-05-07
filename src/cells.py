@@ -20,6 +20,17 @@ class Cell(QGraphicsRectItem):
         right (bool): True when the right wall exist.
         top (bool): True when the top wall exist.
         bottom (bool): True when the bottom wall exist.
+
+        leftPath (bool): True when the left path exist.
+        rightPath (bool): True when the right path exist.
+        topPath (bool): True when the top path exist.
+        bottomPath (bool): True when the bottom path exist.
+
+        leftRoute (bool): True when the left route exist.
+        rightRoute (bool): True when the right route exist.
+        topRoute (bool): True when the top route exist.
+        bottomRoute (bool): True when the bottom route exist.
+
         char (char): The symbol of the cell.
                         ' ' - empty
                         '#' - wall
@@ -29,17 +40,37 @@ class Cell(QGraphicsRectItem):
                         'X' - Exit (not visited)
                         'x' - Exit (visited)
         wallColor (QColor): The color of the wall.
+        pathColor (QColor): The color of the path.
+        routeColor (QColor): The color of the route.
     """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        # Walls
         self.left = True
         self.right = True
         self.top = True
         self.bottom = True
+
+        # Paths
+        self.leftPath = False
+        self.rightPath = False
+        self.topPath = False
+        self.bottomPath = False
+
+        #routs
+        self.leftRoute = False
+        self.rightRoute = False
+        self.topRoute = False
+        self.bottomRoute = False
+
         self.char = ' '
 
         self.wallColor = QColor(0, 0, 0, 255)  # Black
+        self.textColor = QColor(0, 0, 0, 255)  # Black
+        self.pathColor = QColor(63, 162, 242, 255)  # Light Blue
+        self.routeColor = QColor(242, 150, 63, 255)  # Light Orange
 
     def paint(self, painter: QPainter, option: QStyleOptionGraphicsItem, widget: QWidget = None):
         """Override of the paint method.
@@ -97,8 +128,73 @@ class Cell(QGraphicsRectItem):
         if self.bottom:
             painter.drawLine(p1, p2)
 
+        # Draw path
+        center = QPointF((xLeft + xRight) / 2, (yTop + yBottom) / 2)
+
+        # Set pen to pathColor
+        pen = painter.pen()
+        pen.setColor(self.pathColor)
+        pen.setWidth(int(self.rect().width() * 0.1))
+        painter.setPen(pen)
+
+        # left
+        p2 = QPointF(xLeft, center.y())
+        if self.leftPath:
+            painter.drawLine(center, p2)
+
+        # right
+        p2 = QPointF(xRight, center.y())
+        if self.rightPath:
+            painter.drawLine(center, p2)
+
+        # top
+        p2 = QPointF(center.x(), yTop)
+        if self.topPath:
+            painter.drawLine(center, p2)
+
+        # bottom
+        p2 = QPointF(center.x(), yBottom)
+        if self.bottomPath:
+            painter.drawLine(center, p2)
+
+        # Draw route
+
+        # Set pen to routeColor
+        pen = painter.pen()
+        pen.setColor(self.routeColor)
+        pen.setWidth(int(self.rect().width() * 0.1))
+        painter.setPen(pen)
+
+        # left
+        p2 = QPointF(xLeft, center.y())
+        if self.leftRoute:
+            painter.drawLine(center, p2)
+
+        # right
+        p2 = QPointF(xRight, center.y())
+        if self.rightRoute:
+            painter.drawLine(center, p2)
+
+        # top
+        p2 = QPointF(center.x(), yTop)
+        if self.topRoute:
+            painter.drawLine(center, p2)
+
+        # bottom
+        p2 = QPointF(center.x(), yBottom)
+        if self.bottomRoute:
+            painter.drawLine(center, p2)
+
         # Draw char if needed
-        if self.char.lower() == 's' or self.char.lower() == 'x':
+        # Set pen to textColor
+        pen = painter.pen()
+        pen.setColor(self.textColor)
+        pen.setWidth(1)
+        painter.setPen(pen)
+
+        if self.char.upper() == 'S' or self.char.upper() == 'X':
+            symbol = self.char.upper()
+
             # Set font size
             font = painter.font()
             rect = self.rect()
@@ -106,22 +202,22 @@ class Cell(QGraphicsRectItem):
             rect.setWidth(rect.width() * 0.80)  # We want the text to fit inside the box with some gaps
             rect.setHeight(rect.height() * 0.80)  # 80% was a visually appealing scale
 
-            fontSz = self.getLargestFontSize(font, rect, self.char)
+            fontSz = self.getLargestFontSize(font, rect, symbol)
             font.setPointSize(fontSz)
             painter.setFont(font)
 
             # Find where to place the char so it's centered
             fontMetrics = QFontMetrics(font)
-            boundingRect = fontMetrics.tightBoundingRect(self.char)
+            boundingRect = fontMetrics.tightBoundingRect(symbol)
 
-            xShift = (self.rect().width() - boundingRect.width()) // 2
-            yShift = (self.rect().height() - boundingRect.height()) // 2
+            xShift = (self.rect().width() - boundingRect.width()) / 2
+            yShift = (self.rect().height() - boundingRect.height()) / 2
 
             # The x shift is a shift to the right
             # The y shift is a shift up
             p = QPointF(xLeft + xShift, yBottom - yShift)
 
-            painter.drawText(p, self.char)
+            painter.drawText(p, symbol)
 
     def getLargestFontSize(self, font: QFont, rect: QRect, text: str) -> int:
         """Gets the largest font to fit in a rectangle.

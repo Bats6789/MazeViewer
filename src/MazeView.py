@@ -22,8 +22,10 @@ class MazeView(QWidget):
         step (int): The current step for the maze view.
         speed (int): The speed to run through the steps in steps/s.
         steps (list[str]): The list of steps to generate/solve a maze.
-        stepsFile (str): The filename for generating steps.
+        stepsFile (str): The filename for storing the generated steps.
+        mazeFile (str): The filename for storing the generated maze.
         genBin (str): The binary for generating mazes.
+        solveBin (str): The binary for solving mazes.
     """
 
     def __init__(self, *args, **kwargs):
@@ -34,7 +36,9 @@ class MazeView(QWidget):
         self.speed = 50
         self.steps = []
         self.stepsFile = 'maze.steps'
+        self.mazeFile = 'maze.mz'
         self.genBin = os.environ['MAZE_GEN']
+        self.solveBin = os.environ['MAZE_SOLVE']
 
         # Connect control buttons for mazeView page
         self.generateButton.clicked.connect(self.generate)
@@ -42,12 +46,14 @@ class MazeView(QWidget):
         self.stepForwardButton.clicked.connect(self.stepForward)
         self.clearButton.clicked.connect(self.clear)
         self.runButton.clicked.connect(self.run)
+        self.solveButton.clicked.connect(self.solve)
 
         # Set visibility for buttons
         self.stepBackButton.setVisible(False)
         self.stepForwardButton.setVisible(False)
         self.clearButton.setVisible(False)
         self.runButton.setVisible(False)
+        self.solveButton.setVisible(False)
 
     @property
     def speed(self):
@@ -129,9 +135,8 @@ class MazeView(QWidget):
 
         self.mazeViewer.drawMaze(self.steps[self.step])
         self.mazeViewer.refresh()
-        self.step += 1
 
-        if self.step == len(self.steps):
+        if self.step == len(self.steps) - 1:
             self.killTimer(e.timerId())
 
             # Enable all controls until the run finishes
@@ -140,6 +145,9 @@ class MazeView(QWidget):
             self.clearButton.setEnabled(True)
             self.stepBackButton.setEnabled(True)
             self.runButton.setEnabled(True)
+            self.solveButton.setEnabled(True)
+        else:
+            self.step += 1
 
     def generate(self):
         """Generates the maze and steps for building the maze.
@@ -153,6 +161,9 @@ class MazeView(QWidget):
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
         process.wait()
         self.maze = '\n'.join([line.decode('ASCII').strip('\r\n') for line in process.stdout])
+        file = open(self.mazeFile, 'w')
+        file.write(self.maze)
+        file.close()
 
         # Change button text
         self.generateButton.setText('Re&generate')
@@ -161,6 +172,7 @@ class MazeView(QWidget):
         self.stepBackButton.setVisible(True)
         self.stepForwardButton.setVisible(True)
         self.runButton.setVisible(True)
+        self.solveButton.setVisible(True)
         self.clearButton.setVisible(True)
         self.stepForwardButton.setEnabled(True)
 
@@ -221,6 +233,7 @@ class MazeView(QWidget):
         self.stepForwardButton.setVisible(False)
         self.clearButton.setVisible(False)
         self.runButton.setVisible(False)
+        self.solveButton.setVisible(False)
 
         self.refreshMazeView()
 
@@ -251,6 +264,24 @@ class MazeView(QWidget):
         self.stepBackButton.setEnabled(False)
         self.stepForwardButton.setEnabled(False)
         self.runButton.setEnabled(False)
+        self.solveButton.setEnabled(False)
 
         # Start the timer
         self.startTimer(waitTime)
+
+    def solve(self):
+        cmd = [self.solveBin, '-q',
+               '-v', self.stepsFile,
+               '-i', self.mazeFile]
+        process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+        process.wait()
+        self.maze = '\n'.join([line.decode('ASCII').strip('\r\n') for line in process.stdout])
+
+        self.step = 0
+        self.steps = self.importSteps(self.stepsFile)
+
+        self.stepForwardButton.setEnabled(True)
+        self.stepBackButton.setEnabled(False)
+
+        self.mazeViewer.drawMaze(self.maze)
+        self.refreshMazeView()

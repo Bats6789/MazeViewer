@@ -29,7 +29,7 @@
         <number>2</number>
        </property>
        <property name="maximum">
-        <number>20</number>
+        <number>30</number>
        </property>
        <property name="pageStep">
         <number>5</number>
@@ -63,7 +63,7 @@
         <number>2</number>
        </property>
        <property name="maximum">
-        <number>20</number>
+        <number>30</number>
        </property>
        <property name="pageStep">
         <number>5</number>

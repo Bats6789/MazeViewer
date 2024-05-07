@@ -86,11 +86,11 @@ class SizeDialog(QDialog):
                 if firstKey:
                     firstKey = False
                     val = num
-                elif val < 2:
+                elif val < 3:
                     val *= 10
                     val += num
-                elif val == 2 and num == 0:
-                    val = 20
+                elif val == 3 and num == 0:
+                    val = 30
                 else:
                     val = num
                 handled = True
@@ -130,11 +130,7 @@ class SizeDialog(QDialog):
 
     @property
     def width(self):
-        """int: The width of the maze.
-
-        Current range is limited between 2 and 20, and will bound any input
-        to those values. e.g. width = 1 => width = 2.
-        """
+        """int: The width of the maze."""
         return self._width
 
     @width.setter
@@ -143,11 +139,7 @@ class SizeDialog(QDialog):
 
     @property
     def height(self):
-        """int: The height of the maze.
-
-        Current range is limited between 2 and 20, and will bound any input
-        to those values. e.g. height = 1 => height = 2.
-        """
+        """int: The height of the maze."""
         return self._height
 
     @height.setter
