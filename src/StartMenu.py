@@ -27,6 +27,8 @@ class MainWindow(QMainWindow):
         # Settings menu options
         self.actionActiveCellColor.triggered.connect(self.activeColorAction)
         self.actionInactiveCellColor.triggered.connect(self.inactiveColorAction)
+        self.actionCheckPathColor.triggered.connect(self.checkPathColorAction)
+        self.actionSolvePathColor.triggered.connect(self.solvePathColorAction)
         self.actionSize.triggered.connect(self.adjustSize)
         self.actionRunSpeed.triggered.connect(self.adjustSpeed)
 
@@ -46,8 +48,6 @@ class MainWindow(QMainWindow):
     def goToMazeView(self):
         """Go to the second page."""
         self.stackedWidget.setCurrentIndex(1)
-        # e = QResizeEvent(self.geometry().size(), self.geometry().size())
-        # QCoreApplication.postEvent(self, e)
 
     def activeColorAction(self):
         """Starts dialog for assigning the active cell color."""
@@ -62,6 +62,22 @@ class MainWindow(QMainWindow):
         dialog = QColorDialog(self.mazeView.mazeViewer.inactiveColor)
         if dialog.exec():
             self.mazeView.mazeViewer.inactiveColor = dialog.selectedColor()
+            self.mazeView.mazeViewer.redrawMaze()
+            self.mazeView.mazeViewer.refresh()
+
+    def checkPathColorAction(self):
+        """Starts dialog for assigning the path color."""
+        dialog = QColorDialog(self.mazeView.mazeViewer.pathColor)
+        if dialog.exec():
+            self.mazeView.mazeViewer.pathColor = dialog.selectedColor()
+            self.mazeView.mazeViewer.redrawMaze()
+            self.mazeView.mazeViewer.refresh()
+
+    def solvePathColorAction(self):
+        """Starts dialog for assigning the route color."""
+        dialog = QColorDialog(self.mazeView.mazeViewer.routeColor)
+        if dialog.exec():
+            self.mazeView.mazeViewer.routeColor = dialog.selectedColor()
             self.mazeView.mazeViewer.redrawMaze()
             self.mazeView.mazeViewer.refresh()
 

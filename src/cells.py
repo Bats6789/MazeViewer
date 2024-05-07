@@ -261,3 +261,21 @@ class Cell(QGraphicsRectItem):
         font.setPointSize(ogSz)
 
         return sz
+
+    @property
+    def pathColor(self):
+        """QColor: The color of a path cell."""
+        return self._pathColor
+
+    @pathColor.setter
+    def pathColor(self, color: QColor):
+        self._pathColor = color
+
+    @property
+    def routeColor(self):
+        """QColor: The color of a route cell."""
+        return self._routeColor
+
+    @routeColor.setter
+    def routeColor(self, color: QColor):
+        self._routeColor = color

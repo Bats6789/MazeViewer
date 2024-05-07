@@ -30,6 +30,8 @@ class MazeViewer(QGraphicsView):
 
         self.inactiveColor = QColor(127, 127, 127, 255)
         self.activeColor = QColor(255, 255, 255, 255)
+        self.pathColor = QColor(63, 162, 242, 255)
+        self.routeColor = QColor(242, 150, 53, 255)
         self.width = width
         self.height = height
         self._sceneWidth = 1000
@@ -101,6 +103,24 @@ class MazeViewer(QGraphicsView):
     def activeColor(self, color: QColor):
         self._activeColor = color
 
+    @property
+    def routeColor(self):
+        """QColor: The color of a route cell."""
+        return self._routeColor
+
+    @routeColor.setter
+    def routeColor(self, color: QColor):
+        self._routeColor = color
+
+    @property
+    def routeColor(self):
+        """QColor: The color of a route cell."""
+        return self._routeColor
+
+    @routeColor.setter
+    def routeColor(self, color: QColor):
+        self._routeColor = color
+
     def generateMaze(self):
         """Generates the maze.
 
@@ -152,6 +172,8 @@ class MazeViewer(QGraphicsView):
                     color = self.activeColor
 
                 self.rects[i].setBrush(color)
+                self.rects[i].pathColor = self.pathColor
+                self.rects[i].routeColor = self.routeColor
 
     def isRoute(self, c: str) -> bool:
         """Determines if a character is a route.
@@ -175,59 +197,56 @@ class MazeViewer(QGraphicsView):
         """
         rows = maze.split("\n")
 
-        try:
-            for y in range(self.height):
-                for x in range(self.width):
-                    i = y * self.width + x
+        for y in range(self.height):
+            for x in range(self.width):
+                i = y * self.width + x
 
-                    xStr = 2 * x + 1
-                    yStr = 2 * y + 1
+                xStr = 2 * x + 1
+                yStr = 2 * y + 1
 
-                    color = self.inactiveColor
+                color = self.inactiveColor
 
-                    rect = self.rects[i]
+                rect = self.rects[i]
 
-                    # Walls
-                    rect.left = rows[yStr][xStr - 1] == "#"
-                    rect.right = rows[yStr][xStr + 1] == "#"
-                    rect.top = rows[yStr - 1][xStr] == "#"
-                    rect.bottom = rows[yStr + 1][xStr] == "#"
+                # Walls
+                rect.left = rows[yStr][xStr - 1] == "#"
+                rect.right = rows[yStr][xStr + 1] == "#"
+                rect.top = rows[yStr - 1][xStr] == "#"
+                rect.bottom = rows[yStr + 1][xStr] == "#"
 
-                    # Paths
-                    if rows[yStr][xStr] == "." or self.isRoute(rows[yStr][xStr]):
-                        rect.leftPath = rows[yStr][xStr - 1] == "."
-                        rect.rightPath = rows[yStr][xStr + 1] == "."
-                        rect.topPath = rows[yStr - 1][xStr] == "."
-                        rect.bottomPath = rows[yStr + 1][xStr] == "."
-                    else:
-                        rect.leftPath = False
-                        rect.rightPath = False
-                        rect.topPath = False
-                        rect.bottomPath = False
+                # Paths
+                if rows[yStr][xStr] == "." or self.isRoute(rows[yStr][xStr]):
+                    rect.leftPath = rows[yStr][xStr - 1] == "."
+                    rect.rightPath = rows[yStr][xStr + 1] == "."
+                    rect.topPath = rows[yStr - 1][xStr] == "."
+                    rect.bottomPath = rows[yStr + 1][xStr] == "."
+                else:
+                    rect.leftPath = False
+                    rect.rightPath = False
+                    rect.topPath = False
+                    rect.bottomPath = False
 
-                    # Routes
-                    if self.isRoute(rows[yStr][xStr]):
-                        rect.leftRoute = rows[yStr][xStr - 1] == "*"
-                        rect.rightRoute = rows[yStr][xStr + 1] == "*"
-                        rect.topRoute = rows[yStr - 1][xStr] == "*"
-                        rect.bottomRoute = rows[yStr + 1][xStr] == "*"
-                    else:
-                        rect.leftRoute = False
-                        rect.rightRoute = False
-                        rect.topRoute = False
-                        rect.bottomRoute = False
+                # Routes
+                if self.isRoute(rows[yStr][xStr]):
+                    rect.leftRoute = rows[yStr][xStr - 1] == "*"
+                    rect.rightRoute = rows[yStr][xStr + 1] == "*"
+                    rect.topRoute = rows[yStr - 1][xStr] == "*"
+                    rect.bottomRoute = rows[yStr + 1][xStr] == "*"
+                else:
+                    rect.leftRoute = False
+                    rect.rightRoute = False
+                    rect.topRoute = False
+                    rect.bottomRoute = False
 
-                    rect = self.rects[i]
-                    if not (rect.left and rect.right and rect.top and rect.bottom):
-                        color = self.activeColor
+                rect = self.rects[i]
+                if not (rect.left and rect.right and rect.top and rect.bottom):
+                    color = self.activeColor
 
-                    self.rects[i].char = rows[yStr][xStr]
+                self.rects[i].char = rows[yStr][xStr]
 
-                    self.rects[i].setBrush(color)
-        except IndexError:
-            print((xStr, yStr))
-            print((len(rows[0]), len(rows)))
-            print(maze)
+                self.rects[i].setBrush(color)
+                self.rects[i].pathColor = self.pathColor
+                self.rects[i].routeColor = self.routeColor
 
     def clearMaze(self):
         """Resets the maze to factory default.
@@ -258,6 +277,8 @@ class MazeViewer(QGraphicsView):
                 self.rects[i].char = " "
 
                 self.rects[i].setBrush(self.inactiveColor)
+                self.rects[i].pathColor = self.pathColor
+                self.rects[i].routeColor = self.routeColor
 
     def refresh(self):
         """Refresh the view of the maze."""

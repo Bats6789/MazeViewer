@@ -162,6 +162,9 @@
      </property>
      <addaction name="actionActiveCellColor"/>
      <addaction name="actionInactiveCellColor"/>
+     <addaction name="separator"/>
+     <addaction name="actionCheckPathColor"/>
+     <addaction name="actionSolvePathColor"/>
     </widget>
     <addaction name="actionSize"/>
     <addaction name="actionRunSpeed"/>
@@ -188,6 +191,16 @@
   <action name="actionSize">
    <property name="text">
     <string>Si&amp;ze</string>
+   </property>
+  </action>
+  <action name="actionCheckPathColor">
+   <property name="text">
+    <string>Check Path Color</string>
+   </property>
+  </action>
+  <action name="actionSolvePathColor">
+   <property name="text">
+    <string>Solve Path Color</string>
    </property>
   </action>
  </widget>
