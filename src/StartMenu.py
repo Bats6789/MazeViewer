@@ -4,8 +4,6 @@ This file is the main entry point for the MazeViewer project.
 """
 from PyQt6 import uic
 from PyQt6.QtWidgets import QMainWindow, QColorDialog
-# from PyQt6.QtCore import QCoreApplication
-# from PyQt6.QtGui import QResizeEvent
 from MazeView import MazeView
 from SizeDialog import SizeDialog
 from SpeedDialog import SpeedDialog
@@ -24,9 +22,19 @@ class MainWindow(QMainWindow):
         self.mazeView.backButton.clicked.connect(self.goToMainMenu)
         self.stackedWidget.addWidget(self.mazeView)
 
+        # Algorithms menu options
+        # Generators
+        self.actionKruskal.triggered.connect(self.kruskalAction)
+        self.actionPrim.triggered.connect(self.primAction)
+        self.actionBack.triggered.connect(self.backAction)
+        self.actionAldousBroder.triggered.connect(self.aldousBroderAction)
+
+        # Solvers
+
         # Settings menu options
         self.actionActiveCellColor.triggered.connect(self.activeColorAction)
         self.actionInactiveCellColor.triggered.connect(self.inactiveColorAction)
+        self.actionObservingColor.triggered.connect(self.observingColorAction)
         self.actionCheckPathColor.triggered.connect(self.checkPathColorAction)
         self.actionSolvePathColor.triggered.connect(self.solvePathColorAction)
         self.actionSize.triggered.connect(self.adjustSize)
@@ -65,6 +73,14 @@ class MainWindow(QMainWindow):
             self.mazeView.mazeViewer.redrawMaze()
             self.mazeView.mazeViewer.refresh()
 
+    def observingColorAction(self):
+        """Starts dialog for assigning the observing cell color."""
+        dialog = QColorDialog(self.mazeView.mazeViewer.observingColor)
+        if dialog.exec():
+            self.mazeView.mazeViewer.observingColor = dialog.selectedColor()
+            self.mazeView.mazeViewer.redrawMaze()
+            self.mazeView.mazeViewer.refresh()
+
     def checkPathColorAction(self):
         """Starts dialog for assigning the path color."""
         dialog = QColorDialog(self.mazeView.mazeViewer.pathColor)
@@ -89,11 +105,22 @@ class MainWindow(QMainWindow):
             self.mazeView.mazeViewer.width = dialog.width
             self.mazeView.mazeViewer.height = dialog.height
             self.mazeView.mazeViewer.reset()
-            self.mazeView.generateButton.setText('&Generate')
-            self.mazeView.refreshMazeView()
+            self.mazeView.clear()
 
     def adjustSpeed(self):
         """Starts dialog for adjusting the speed of the run operation."""
         dialog = SpeedDialog(self.mazeView.speed)
         if dialog.exec():
             self.mazeView.speed = dialog.speed
+
+    def kruskalAction(self):
+        self.mazeView.generator = 'kruskal'
+
+    def primAction(self):
+        self.mazeView.generator = 'prim'
+
+    def backAction(self):
+        self.mazeView.generator = 'back'
+
+    def aldousBroderAction(self):
+        self.mazeView.generator = 'aldous-broder'

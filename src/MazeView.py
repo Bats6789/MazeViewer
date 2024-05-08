@@ -26,19 +26,21 @@ class MazeView(QWidget):
         mazeFile (str): The filename for storing the generated maze.
         genBin (str): The binary for generating mazes.
         solveBin (str): The binary for solving mazes.
+        generator (str): The name of the generator to use (default: kruskal).
     """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        uic.loadUi('ui/MazeViewing.ui', self)
+        uic.loadUi("ui/MazeViewing.ui", self)
 
         self.step = -1
         self.speed = 50
         self.steps = []
-        self.stepsFile = 'maze.steps'
-        self.mazeFile = 'maze.mz'
-        self.genBin = os.environ['MAZE_GEN']
-        self.solveBin = os.environ['MAZE_SOLVE']
+        self.stepsFile = "maze.steps"
+        self.mazeFile = "maze.mz"
+        self.genBin = os.environ["MAZE_GEN"]
+        self.solveBin = os.environ["MAZE_SOLVE"]
+        self.generator = "kruskal"
 
         # Connect control buttons for mazeView page
         self.generateButton.clicked.connect(self.generate)
@@ -68,6 +70,14 @@ class MazeView(QWidget):
             self._speed = 1
         else:
             self._speed = speed
+
+    @property
+    def generator(self):
+        return self._generator
+
+    @generator.setter
+    def generator(self, generator: str):
+        self._generator = generator
 
     def resizeEvent(self, e: QResizeEvent):
         """Override of the resizeEvent method
@@ -155,18 +165,27 @@ class MazeView(QWidget):
         Note:
             This function will generate a file names after stepsFile attribute.
         """
-        cmd = [self.genBin, '-q',
-               '-v', self.stepsFile,
-               str(self.mazeViewer.width), str(self.mazeViewer.height)]
+        cmd = [
+            self.genBin,
+            "-q",
+            "-v",
+            self.stepsFile,
+            "-a",
+            self.generator,
+            str(self.mazeViewer.width),
+            str(self.mazeViewer.height)
+        ]
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
         process.wait()
-        self.maze = '\n'.join([line.decode('ASCII').strip('\r\n') for line in process.stdout])
-        file = open(self.mazeFile, 'w')
+        self.maze = "\n".join(
+            [line.decode("ASCII").strip("\r\n") for line in process.stdout]
+        )
+        file = open(self.mazeFile, "w")
         file.write(self.maze)
         file.close()
 
         # Change button text
-        self.generateButton.setText('Re&generate')
+        self.generateButton.setText("Re&generate")
 
         # Enable back and forward buttons
         self.stepBackButton.setVisible(True)
@@ -192,9 +211,9 @@ class MazeView(QWidget):
         Returns:
             list[str]: The list of steps, with each step being a string.
         """
-        file = open(fileName, 'r')
+        file = open(fileName, "r")
 
-        steps = file.read().split('\n\n')
+        steps = file.read().split("\n\n")
         return steps
 
     def stepBack(self):
@@ -226,7 +245,7 @@ class MazeView(QWidget):
         """Clear the maze and revert it to its original state."""
         # clear the maze
         self.mazeViewer.clearMaze()
-        self.generateButton.setText('&Generate')
+        self.generateButton.setText("&Generate")
 
         # Hide buttons
         self.stepBackButton.setVisible(False)
@@ -270,12 +289,12 @@ class MazeView(QWidget):
         self.startTimer(waitTime)
 
     def solve(self):
-        cmd = [self.solveBin, '-q',
-               '-v', self.stepsFile,
-               '-i', self.mazeFile]
+        cmd = [self.solveBin, "-q", "-v", self.stepsFile, "-i", self.mazeFile]
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
         process.wait()
-        self.maze = '\n'.join([line.decode('ASCII').strip('\r\n') for line in process.stdout])
+        self.maze = "\n".join(
+            [line.decode("ASCII").strip("\r\n") for line in process.stdout]
+        )
 
         self.step = 0
         self.steps = self.importSteps(self.stepsFile)

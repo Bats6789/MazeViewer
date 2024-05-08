@@ -143,6 +143,7 @@
     </item>
    </layout>
   </widget>
+  <widget class="QStatusBar" name="statusbar"/>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
@@ -162,6 +163,7 @@
      </property>
      <addaction name="actionActiveCellColor"/>
      <addaction name="actionInactiveCellColor"/>
+     <addaction name="actionObservingColor"/>
      <addaction name="separator"/>
      <addaction name="actionCheckPathColor"/>
      <addaction name="actionSolvePathColor"/>
@@ -170,9 +172,31 @@
     <addaction name="actionRunSpeed"/>
     <addaction name="menuColor"/>
    </widget>
+   <widget class="QMenu" name="menuAlgorithm_2">
+    <property name="title">
+     <string>Algorithm</string>
+    </property>
+    <widget class="QMenu" name="menuGenerator">
+     <property name="title">
+      <string>Generator</string>
+     </property>
+     <addaction name="actionKruskal"/>
+     <addaction name="actionPrim"/>
+     <addaction name="actionBack"/>
+     <addaction name="actionAldousBroder"/>
+    </widget>
+    <widget class="QMenu" name="menuSolver_2">
+     <property name="title">
+      <string>Solver</string>
+     </property>
+     <addaction name="actionDepth_First_Floodfill_2"/>
+    </widget>
+    <addaction name="menuGenerator"/>
+    <addaction name="menuSolver_2"/>
+   </widget>
+   <addaction name="menuAlgorithm_2"/>
    <addaction name="menuSettings"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <action name="actionActiveCellColor">
    <property name="text">
     <string>&amp;Active Cell Color</string>
@@ -201,6 +225,51 @@
   <action name="actionSolvePathColor">
    <property name="text">
     <string>Solve Path Color</string>
+   </property>
+  </action>
+  <action name="actionGenerator">
+   <property name="text">
+    <string>Generator</string>
+   </property>
+  </action>
+  <action name="actionDepth_First_Floodfill">
+   <property name="text">
+    <string>Depth-First Floodfill</string>
+   </property>
+  </action>
+  <action name="actionKruskal">
+   <property name="text">
+    <string>Kruskal</string>
+   </property>
+  </action>
+  <action name="actionDepth_First_Floodfill_2">
+   <property name="text">
+    <string>Depth-First Floodfill</string>
+   </property>
+  </action>
+  <action name="actionPrim">
+   <property name="text">
+    <string>Prim</string>
+   </property>
+  </action>
+  <action name="actionBack">
+   <property name="text">
+    <string>Recursive Backtracking</string>
+   </property>
+  </action>
+  <action name="actionObserving_Cell_Color">
+   <property name="text">
+    <string>Observing Cell Color</string>
+   </property>
+  </action>
+  <action name="actionObservingColor">
+   <property name="text">
+    <string>Observing Cell Color</string>
+   </property>
+  </action>
+  <action name="actionAldousBroder">
+   <property name="text">
+    <string>Aldous-Broder</string>
    </property>
   </action>
  </widget>

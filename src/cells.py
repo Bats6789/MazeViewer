@@ -59,20 +59,28 @@ class Cell(QGraphicsRectItem):
         self.topPath = False
         self.bottomPath = False
 
-        #routs
+        # routs
         self.leftRoute = False
         self.rightRoute = False
         self.topRoute = False
         self.bottomRoute = False
 
-        self.char = ' '
+        # observing
+        self.observing = False
+
+        self.char = " "
 
         self.wallColor = QColor(0, 0, 0, 255)  # Black
         self.textColor = QColor(0, 0, 0, 255)  # Black
         self.pathColor = QColor(63, 162, 242, 255)  # Light Blue
         self.routeColor = QColor(242, 150, 63, 255)  # Light Orange
 
-    def paint(self, painter: QPainter, option: QStyleOptionGraphicsItem, widget: QWidget = None):
+    def paint(
+        self,
+        painter: QPainter,
+        option: QStyleOptionGraphicsItem,
+        widget: QWidget = None,
+    ):
         """Override of the paint method.
 
         The override is necessary because only some of the walls may be drawn for a cell.
@@ -192,14 +200,16 @@ class Cell(QGraphicsRectItem):
         pen.setWidth(1)
         painter.setPen(pen)
 
-        if self.char.upper() == 'S' or self.char.upper() == 'X':
+        if self.char.upper() == "S" or self.char.upper() == "X":
             symbol = self.char.upper()
 
             # Set font size
             font = painter.font()
             rect = self.rect()
 
-            rect.setWidth(rect.width() * 0.80)  # We want the text to fit inside the box with some gaps
+            rect.setWidth(
+                rect.width() * 0.80
+            )  # We want the text to fit inside the box with some gaps
             rect.setHeight(rect.height() * 0.80)  # 80% was a visually appealing scale
 
             fontSz = self.getLargestFontSize(font, rect, symbol)

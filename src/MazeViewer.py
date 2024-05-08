@@ -32,6 +32,7 @@ class MazeViewer(QGraphicsView):
         self.activeColor = QColor(255, 255, 255, 255)
         self.pathColor = QColor(63, 162, 242, 255)
         self.routeColor = QColor(242, 150, 53, 255)
+        self.observingColor = QColor(245, 100, 100, 255)
         self.width = width
         self.height = height
         self._sceneWidth = 1000
@@ -168,8 +169,38 @@ class MazeViewer(QGraphicsView):
                 color = self.inactiveColor
 
                 rect = self.rects[i]
+
+                # Observing
+                if x > 0:
+                    leftObserve = self.rects[i - 1].observing
+                else:
+                    leftObserve = True
+
+                if leftObserve and x < self.width - 1:
+                    rightObserve = self.rects[i + 1].observing
+                else:
+                    rightObserve = True
+
+                if leftObserve and rightObserve and y > 0:
+                    topObserve = self.rects[i - self.width].observing
+                else:
+                    topObserve = True
+
+                if leftObserve and rightObserve and topObserve and y < self.height - 1:
+                    bottomObserve = self.rects[i + self.width].observing
+                else:
+                    bottomObserve = True
+
+                # If all the neighbors are observers, the current cell is active
+                if leftObserve and rightObserve and topObserve and bottomObserve:
+                    color = self.activeColor
+
                 if not (rect.left and rect.right and rect.top and rect.bottom):
                     color = self.activeColor
+
+                # Observer cells take precedence over active cells
+                if rect.observing:
+                    color = self.observingColor
 
                 self.rects[i].setBrush(color)
                 self.rects[i].pathColor = self.pathColor
@@ -238,9 +269,40 @@ class MazeViewer(QGraphicsView):
                     rect.topRoute = False
                     rect.bottomRoute = False
 
-                rect = self.rects[i]
+                # Observing
+                if x > 0:
+                    leftObserve = rows[yStr][xStr - 2] == ':'
+                else:
+                    leftObserve = True
+
+                if leftObserve and x < self.width - 1:
+                    rightObserve = rows[yStr][xStr + 2] == ':'
+                else:
+                    rightObserve = True
+
+                if leftObserve and rightObserve and y > 0:
+                    topObserve = rows[2 * y - 1][xStr] == ':'
+                else:
+                    topObserve = True
+
+                if leftObserve and rightObserve and topObserve and y < self.height - 1:
+                    bottomObserve = rows[2 * y + 3][xStr] == ':'
+                else:
+                    bottomObserve = True
+
+                # If all the neighbors are observers, the current cell is active
+                if leftObserve and rightObserve and topObserve and bottomObserve:
+                    color = self.activeColor
+
                 if not (rect.left and rect.right and rect.top and rect.bottom):
                     color = self.activeColor
+
+                # Observer cells take precedence over active cells
+                if rows[yStr][xStr] == ':':
+                    rect.observing = True
+                    color = self.observingColor
+                else:
+                    rect.observing = False
 
                 self.rects[i].char = rows[yStr][xStr]
 
@@ -273,6 +335,8 @@ class MazeViewer(QGraphicsView):
                 self.rects[i].rightRoute = False
                 self.rects[i].topRoute = False
                 self.rects[i].bottomRoute = False
+
+                self.rects[i].observing = False
 
                 self.rects[i].char = " "
 
