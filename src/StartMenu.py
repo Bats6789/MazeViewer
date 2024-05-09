@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import QMainWindow, QColorDialog
 from MazeView import MazeView
 from SizeDialog import SizeDialog
 from SpeedDialog import SpeedDialog
+from GrowingTreeDialog import GrowingTreeDialog
 
 
 class MainWindow(QMainWindow):
@@ -28,6 +29,8 @@ class MainWindow(QMainWindow):
         self.actionPrim.triggered.connect(self.primAction)
         self.actionBack.triggered.connect(self.backAction)
         self.actionAldousBroder.triggered.connect(self.aldousBroderAction)
+        self.actionGrowingTree.triggered.connect(self.growingTreeAction)
+        self.actionHuntAndKill.triggered.connect(self.huntAndKillAction)
 
         # Solvers
 
@@ -124,3 +127,19 @@ class MainWindow(QMainWindow):
 
     def aldousBroderAction(self):
         self.mazeView.generator = 'aldous-broder'
+
+    def growingTreeAction(self):
+        self.mazeView.generator = 'growing-tree'
+
+        first = self.mazeView.firstMethod
+        second = self.mazeView.secondMethod
+        split = self.mazeView.split
+        dialog = GrowingTreeDialog(first, second, split)
+
+        if dialog.exec():
+            self.mazeView.firstMethod = dialog.first
+            self.mazeView.secondMethod = dialog.second
+            self.mazeView.split = dialog.split
+
+    def huntAndKillAction(self):
+        self.mazeView.generator = 'hunt-and-kill'

@@ -5,8 +5,9 @@ logic to it.
 """
 from PyQt6.QtWidgets import QWidget
 from PyQt6 import uic
-from PyQt6.QtCore import QCoreApplication, QTimerEvent
-from PyQt6.QtGui import QResizeEvent
+from PyQt6.QtCore import QCoreApplication, QTimerEvent, Qt
+from PyQt6.QtGui import QResizeEvent, QKeyEvent
+from GrowingTreeDialog import GrowingTreeMethods, methodToString
 import subprocess
 import os
 
@@ -41,6 +42,9 @@ class MazeView(QWidget):
         self.genBin = os.environ["MAZE_GEN"]
         self.solveBin = os.environ["MAZE_SOLVE"]
         self.generator = "kruskal"
+        self.firstMethod = GrowingTreeMethods.NEWEST
+        self.secondMethod = None
+        self.split = 0.5
 
         # Connect control buttons for mazeView page
         self.generateButton.clicked.connect(self.generate)
@@ -159,19 +163,52 @@ class MazeView(QWidget):
         else:
             self.step += 1
 
+    def keyPressEvent(self, e: QKeyEvent):
+        """Override for the keyPressEvent.
+
+        Note:
+            Mainly for handling shortcut keys.
+
+        Args:
+            e (QKeyEvent): The key event.
+        """
+        super().keyPressEvent(e)
+
+        kCode = Qt.Key
+        match(e.key()):
+            case kCode.Key_Home:
+                self.step = 0
+                self.mazeViewer.drawMaze(self.steps[self.step])
+                self.refreshMazeView()
+
+            case kCode.Key_End:
+                self.step = len(self.steps) - 1
+                self.mazeViewer.drawMaze(self.steps[self.step])
+                self.refreshMazeView()
+
     def generate(self):
         """Generates the maze and steps for building the maze.
 
         Note:
             This function will generate a file names after stepsFile attribute.
         """
+        generator = [self.generator]
+        if self.generator == "growing-tree":
+            generator.append(methodToString(self.firstMethod, self.secondMethod))
+            if self.secondMethod is not None:
+                string = str(self.split)
+                if len(string) > 4:
+                    string = string[0:4]
+
+                generator.append(string)
+
         cmd = [
             self.genBin,
             "-q",
             "-v",
             self.stepsFile,
             "-a",
-            self.generator,
+            *generator,
             str(self.mazeViewer.width),
             str(self.mazeViewer.height)
         ]

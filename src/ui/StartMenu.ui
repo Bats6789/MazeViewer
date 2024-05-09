@@ -174,20 +174,22 @@
    </widget>
    <widget class="QMenu" name="menuAlgorithm_2">
     <property name="title">
-     <string>Algorithm</string>
+     <string>&amp;Algorithm</string>
     </property>
     <widget class="QMenu" name="menuGenerator">
      <property name="title">
-      <string>Generator</string>
+      <string>&amp;Generator</string>
      </property>
      <addaction name="actionKruskal"/>
      <addaction name="actionPrim"/>
      <addaction name="actionBack"/>
      <addaction name="actionAldousBroder"/>
+     <addaction name="actionGrowingTree"/>
+     <addaction name="actionHuntAndKill"/>
     </widget>
     <widget class="QMenu" name="menuSolver_2">
      <property name="title">
-      <string>Solver</string>
+      <string>&amp;Solver</string>
      </property>
      <addaction name="actionDepth_First_Floodfill_2"/>
     </widget>
@@ -239,7 +241,7 @@
   </action>
   <action name="actionKruskal">
    <property name="text">
-    <string>Kruskal</string>
+    <string>&amp;Kruskal</string>
    </property>
   </action>
   <action name="actionDepth_First_Floodfill_2">
@@ -249,12 +251,12 @@
   </action>
   <action name="actionPrim">
    <property name="text">
-    <string>Prim</string>
+    <string>&amp;Prim</string>
    </property>
   </action>
   <action name="actionBack">
    <property name="text">
-    <string>Recursive Backtracking</string>
+    <string>&amp;Recursive Backtracking</string>
    </property>
   </action>
   <action name="actionObserving_Cell_Color">
@@ -269,7 +271,42 @@
   </action>
   <action name="actionAldousBroder">
    <property name="text">
-    <string>Aldous-Broder</string>
+    <string>&amp;Aldous-Broder</string>
+   </property>
+  </action>
+  <action name="actionNewest">
+   <property name="text">
+    <string>Newest</string>
+   </property>
+  </action>
+  <action name="actionOldest">
+   <property name="text">
+    <string>Oldest</string>
+   </property>
+  </action>
+  <action name="actionMiddle">
+   <property name="text">
+    <string>Middle</string>
+   </property>
+  </action>
+  <action name="actionRandom">
+   <property name="text">
+    <string>Random</string>
+   </property>
+  </action>
+  <action name="actionSplit_Ratio">
+   <property name="text">
+    <string>Split-Ratio</string>
+   </property>
+  </action>
+  <action name="actionGrowingTree">
+   <property name="text">
+    <string>&amp;Growing-Tree</string>
+   </property>
+  </action>
+  <action name="actionHuntAndKill">
+   <property name="text">
+    <string>&amp;Hunt-and-Kill</string>
    </property>
   </action>
  </widget>

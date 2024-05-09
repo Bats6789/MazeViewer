@@ -215,7 +215,7 @@ class MazeViewer(QGraphicsView):
         Returns:
             True if it is a route (*, s, x)
         """
-        return c == '*' or c == 's' or c == 'x'
+        return c == "*" or c == "s" or c == "x"
 
     def drawMaze(self, maze: str):
         """Draws the maze.
@@ -271,22 +271,22 @@ class MazeViewer(QGraphicsView):
 
                 # Observing
                 if x > 0:
-                    leftObserve = rows[yStr][xStr - 2] == ':'
+                    leftObserve = rows[yStr][xStr - 2] == ":"
                 else:
                     leftObserve = True
 
                 if leftObserve and x < self.width - 1:
-                    rightObserve = rows[yStr][xStr + 2] == ':'
+                    rightObserve = rows[yStr][xStr + 2] == ":"
                 else:
                     rightObserve = True
 
                 if leftObserve and rightObserve and y > 0:
-                    topObserve = rows[2 * y - 1][xStr] == ':'
+                    topObserve = rows[2 * y - 1][xStr] == ":"
                 else:
                     topObserve = True
 
                 if leftObserve and rightObserve and topObserve and y < self.height - 1:
-                    bottomObserve = rows[2 * y + 3][xStr] == ':'
+                    bottomObserve = rows[2 * y + 3][xStr] == ":"
                 else:
                     bottomObserve = True
 
@@ -298,7 +298,7 @@ class MazeViewer(QGraphicsView):
                     color = self.activeColor
 
                 # Observer cells take precedence over active cells
-                if rows[yStr][xStr] == ':':
+                if rows[yStr][xStr] == ":":
                     rect.observing = True
                     color = self.observingColor
                 else:
