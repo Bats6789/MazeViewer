@@ -68,6 +68,9 @@ class Cell(QGraphicsRectItem):
         # observing
         self.observing = False
 
+        # queued
+        self.queued = False
+
         self.char = " "
 
         self.wallColor = QColor(0, 0, 0, 255)  # Black

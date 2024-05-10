@@ -33,6 +33,7 @@ class MazeViewer(QGraphicsView):
         self.pathColor = QColor(63, 162, 242, 255)
         self.routeColor = QColor(242, 150, 53, 255)
         self.observingColor = QColor(245, 100, 100, 255)
+        self.queuedColor = QColor(163, 57, 57, 255)
         self.width = width
         self.height = height
         self._sceneWidth = 1000
@@ -198,7 +199,11 @@ class MazeViewer(QGraphicsView):
                 if not (rect.left and rect.right and rect.top and rect.bottom):
                     color = self.activeColor
 
-                # Observer cells take precedence over active cells
+                # Queued cells take precedence over active cells
+                if rect.queued:
+                    color = self.queuedColor
+
+                # Observer cells take precedence over active cells and queued cells
                 if rect.observing:
                     color = self.observingColor
 
@@ -297,7 +302,14 @@ class MazeViewer(QGraphicsView):
                 if not (rect.left and rect.right and rect.top and rect.bottom):
                     color = self.activeColor
 
-                # Observer cells take precedence over active cells
+                # Queued cells take precedence over active cells
+                if rows[yStr][xStr] in ['Q', 'q']:
+                    rect.queued = True
+                    color = self.queuedColor
+                else:
+                    rect.observing = False
+
+                # Observer cells take precedence over active cells and queued cells
                 if rows[yStr][xStr] == ":":
                     rect.observing = True
                     color = self.observingColor

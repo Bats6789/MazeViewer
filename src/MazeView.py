@@ -179,11 +179,15 @@ class MazeView(QWidget):
             case kCode.Key_Home:
                 self.step = 0
                 self.mazeViewer.drawMaze(self.steps[self.step])
+                self.stepBackButton.setEnabled(False)
+                self.stepForwardButton.setEnabled(True)
                 self.refreshMazeView()
 
             case kCode.Key_End:
                 self.step = len(self.steps) - 1
                 self.mazeViewer.drawMaze(self.steps[self.step])
+                self.stepBackButton.setEnabled(True)
+                self.stepForwardButton.setEnabled(False)
                 self.refreshMazeView()
 
     def generate(self):
