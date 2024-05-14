@@ -187,6 +187,7 @@
      <addaction name="actionGrowingTree"/>
      <addaction name="actionHuntAndKill"/>
      <addaction name="actionWilson"/>
+     <addaction name="actionEller"/>
     </widget>
     <widget class="QMenu" name="menuSolver_2">
      <property name="title">
@@ -313,6 +314,11 @@
   <action name="actionWilson">
    <property name="text">
     <string>&amp;Wilson</string>
+   </property>
+  </action>
+  <action name="actionEller">
+   <property name="text">
+    <string>&amp;Eller</string>
    </property>
   </action>
  </widget>

@@ -32,6 +32,7 @@ class MainWindow(QMainWindow):
         self.actionGrowingTree.triggered.connect(self.growingTreeAction)
         self.actionHuntAndKill.triggered.connect(self.huntAndKillAction)
         self.actionWilson.triggered.connect(self.wilsonAction)
+        self.actionEller.triggered.connect(self.ellerAction)
 
         # Solvers
 
@@ -147,3 +148,6 @@ class MainWindow(QMainWindow):
 
     def wilsonAction(self):
         self.mazeView.generator = 'wilson'
+
+    def ellerAction(self):
+        self.mazeView.generator = 'eller'
