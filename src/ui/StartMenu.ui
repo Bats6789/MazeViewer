@@ -190,6 +190,7 @@
      <addaction name="actionEller"/>
      <addaction name="actionDivision"/>
      <addaction name="actionSidewinder"/>
+     <addaction name="actionBinaryTree"/>
     </widget>
     <widget class="QMenu" name="menuSolver_2">
      <property name="title">
@@ -331,6 +332,11 @@
   <action name="actionSidewinder">
    <property name="text">
     <string>&amp;Sidewinder</string>
+   </property>
+  </action>
+  <action name="actionBinaryTree">
+   <property name="text">
+    <string>&amp;Binary Tree</string>
    </property>
   </action>
  </widget>

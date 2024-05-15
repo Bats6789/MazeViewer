@@ -8,6 +8,7 @@ from PyQt6 import uic
 from PyQt6.QtCore import QCoreApplication, QTimerEvent, Qt
 from PyQt6.QtGui import QResizeEvent, QKeyEvent
 from GrowingTreeDialog import GrowingTreeMethods, methodToString
+from BinaryTreeDialog import BinaryTreeBiases, biasToString
 import subprocess
 import os
 
@@ -45,6 +46,7 @@ class MazeView(QWidget):
         self.firstMethod = GrowingTreeMethods.NEWEST
         self.secondMethod = None
         self.split = 0.5
+        self.bias = BinaryTreeBiases.SOUTH_WEST
 
         # Connect control buttons for mazeView page
         self.generateButton.clicked.connect(self.generate)
@@ -197,6 +199,7 @@ class MazeView(QWidget):
             This function will generate a file names after stepsFile attribute.
         """
         generator = [self.generator]
+
         if self.generator == "growing-tree":
             generator.append(methodToString(self.firstMethod, self.secondMethod))
             if self.secondMethod is not None:
@@ -205,6 +208,9 @@ class MazeView(QWidget):
                     string = string[0:4]
 
                 generator.append(string)
+
+        elif self.generator == "binary-tree":
+            generator.append(biasToString(self.bias))
 
         cmd = [
             self.genBin,

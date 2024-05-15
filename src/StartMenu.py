@@ -8,6 +8,7 @@ from MazeView import MazeView
 from SizeDialog import SizeDialog
 from SpeedDialog import SpeedDialog
 from GrowingTreeDialog import GrowingTreeDialog
+from BinaryTreeDialog import BinaryTreeDialog
 
 
 class MainWindow(QMainWindow):
@@ -15,7 +16,7 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        uic.loadUi('ui/StartMenu.ui', self)
+        uic.loadUi("ui/StartMenu.ui", self)
 
         # Connect page swapping buttons
         self.startButton.clicked.connect(self.goToMazeView)
@@ -35,6 +36,7 @@ class MainWindow(QMainWindow):
         self.actionEller.triggered.connect(self.ellerAction)
         self.actionDivision.triggered.connect(self.divisionAction)
         self.actionSidewinder.triggered.connect(self.sidewinderAction)
+        self.actionBinaryTree.triggered.connect(self.binaryTreeAction)
 
         # Solvers
 
@@ -121,19 +123,19 @@ class MainWindow(QMainWindow):
             self.mazeView.speed = dialog.speed
 
     def kruskalAction(self):
-        self.mazeView.generator = 'kruskal'
+        self.mazeView.generator = "kruskal"
 
     def primAction(self):
-        self.mazeView.generator = 'prim'
+        self.mazeView.generator = "prim"
 
     def backAction(self):
-        self.mazeView.generator = 'back'
+        self.mazeView.generator = "back"
 
     def aldousBroderAction(self):
-        self.mazeView.generator = 'aldous-broder'
+        self.mazeView.generator = "aldous-broder"
 
     def growingTreeAction(self):
-        self.mazeView.generator = 'growing-tree'
+        self.mazeView.generator = "growing-tree"
 
         first = self.mazeView.firstMethod
         second = self.mazeView.secondMethod
@@ -146,16 +148,25 @@ class MainWindow(QMainWindow):
             self.mazeView.split = dialog.split
 
     def huntAndKillAction(self):
-        self.mazeView.generator = 'hunt-and-kill'
+        self.mazeView.generator = "hunt-and-kill"
 
     def wilsonAction(self):
-        self.mazeView.generator = 'wilson'
+        self.mazeView.generator = "wilson"
 
     def ellerAction(self):
-        self.mazeView.generator = 'eller'
+        self.mazeView.generator = "eller"
 
     def divisionAction(self):
-        self.mazeView.generator = 'divide'
+        self.mazeView.generator = "divide"
 
     def sidewinderAction(self):
-        self.mazeView.generator = 'sidewinder'
+        self.mazeView.generator = "sidewinder"
+
+    def binaryTreeAction(self):
+        self.mazeView.generator = "binary-tree"
+
+        bias = self.mazeView.bias
+
+        dialog = BinaryTreeDialog(bias)
+        if dialog.exec():
+            self.mazeView.bias = dialog.bias
