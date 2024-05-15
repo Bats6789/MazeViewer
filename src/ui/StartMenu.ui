@@ -188,6 +188,8 @@
      <addaction name="actionHuntAndKill"/>
      <addaction name="actionWilson"/>
      <addaction name="actionEller"/>
+     <addaction name="actionDivision"/>
+     <addaction name="actionSidewinder"/>
     </widget>
     <widget class="QMenu" name="menuSolver_2">
      <property name="title">
@@ -319,6 +321,16 @@
   <action name="actionEller">
    <property name="text">
     <string>&amp;Eller</string>
+   </property>
+  </action>
+  <action name="actionDivision">
+   <property name="text">
+    <string>Recursive &amp;Division</string>
+   </property>
+  </action>
+  <action name="actionSidewinder">
+   <property name="text">
+    <string>&amp;Sidewinder</string>
    </property>
   </action>
  </widget>
