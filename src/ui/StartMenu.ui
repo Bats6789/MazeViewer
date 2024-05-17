@@ -196,7 +196,10 @@
      <property name="title">
       <string>&amp;Solver</string>
      </property>
-     <addaction name="actionDepth_First_Floodfill_2"/>
+     <addaction name="actionDepthFirstFloodfill"/>
+     <addaction name="actionBreadthFirstFloodfill"/>
+     <addaction name="actionDijkstra"/>
+     <addaction name="actionAStar"/>
     </widget>
     <addaction name="menuGenerator"/>
     <addaction name="menuSolver_2"/>
@@ -249,9 +252,9 @@
     <string>&amp;Kruskal</string>
    </property>
   </action>
-  <action name="actionDepth_First_Floodfill_2">
+  <action name="actionDepthFirstFloodfill">
    <property name="text">
-    <string>Depth-First Floodfill</string>
+    <string>&amp;Depth-First Floodfill</string>
    </property>
   </action>
   <action name="actionPrim">
@@ -337,6 +340,21 @@
   <action name="actionBinaryTree">
    <property name="text">
     <string>&amp;Binary Tree</string>
+   </property>
+  </action>
+  <action name="actionBreadthFirstFloodfill">
+   <property name="text">
+    <string>&amp;Breadth-First Floodfill</string>
+   </property>
+  </action>
+  <action name="actionDijkstra">
+   <property name="text">
+    <string>D&amp;ijkstra</string>
+   </property>
+  </action>
+  <action name="actionAStar">
+   <property name="text">
+    <string>&amp;A-Star</string>
    </property>
   </action>
  </widget>

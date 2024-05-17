@@ -43,6 +43,7 @@ class MazeView(QWidget):
         self.genBin = os.environ["MAZE_GEN"]
         self.solveBin = os.environ["MAZE_SOLVE"]
         self.generator = "kruskal"
+        self.solver = "depth"
         self.firstMethod = GrowingTreeMethods.NEWEST
         self.secondMethod = None
         self.split = 0.5
@@ -177,7 +178,7 @@ class MazeView(QWidget):
         super().keyPressEvent(e)
 
         kCode = Qt.Key
-        match(e.key()):
+        match (e.key()):
             case kCode.Key_Home:
                 self.step = 0
                 self.mazeViewer.drawMaze(self.steps[self.step])
@@ -220,7 +221,7 @@ class MazeView(QWidget):
             "-a",
             *generator,
             str(self.mazeViewer.width),
-            str(self.mazeViewer.height)
+            str(self.mazeViewer.height),
         ]
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
         process.wait()
@@ -336,7 +337,16 @@ class MazeView(QWidget):
         self.startTimer(waitTime)
 
     def solve(self):
-        cmd = [self.solveBin, "-q", "-v", self.stepsFile, "-i", self.mazeFile]
+        cmd = [
+            self.solveBin,
+            "-q",
+            "-v",
+            self.stepsFile,
+            "-i",
+            self.mazeFile,
+            "-a",
+            self.solver,
+        ]
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
         process.wait()
         self.maze = "\n".join(

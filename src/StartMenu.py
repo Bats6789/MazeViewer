@@ -39,6 +39,10 @@ class MainWindow(QMainWindow):
         self.actionBinaryTree.triggered.connect(self.binaryTreeAction)
 
         # Solvers
+        self.actionDepthFirstFloodfill.triggered.connect(self.depthFirstAction)
+        self.actionBreadthFirstFloodfill.triggered.connect(self.breadthFirstAction)
+        self.actionDijkstra.triggered.connect(self.dijkstraAction)
+        self.actionAStar.triggered.connect(self.aStarAction)
 
         # Settings menu options
         self.actionActiveCellColor.triggered.connect(self.activeColorAction)
@@ -170,3 +174,15 @@ class MainWindow(QMainWindow):
         dialog = BinaryTreeDialog(bias)
         if dialog.exec():
             self.mazeView.bias = dialog.bias
+
+    def depthFirstAction(self):
+        self.mazeView.solver = "depth"
+
+    def breadthFirstAction(self):
+        self.mazeView.solver = "breadth"
+
+    def dijkstraAction(self):
+        self.mazeView.solver = "dijkstra"
+
+    def aStarAction(self):
+        self.mazeView.solver = "a-star"
