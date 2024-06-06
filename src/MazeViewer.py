@@ -150,7 +150,7 @@ class MazeViewer(QGraphicsView):
         for y in range(self.height):
             for x in range(self.width):
                 rect = Cell(cellRect)
-                rect.setPos(x * cellWidth, y * cellHeight)
+                rect.setPos(x * cellWidth + 1, y * cellHeight + 1)
                 rect.setBrush(self.inactiveColor)
                 self.scene.addItem(rect)
                 self.rects.append(rect)
